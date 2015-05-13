@@ -8,6 +8,7 @@ module Carcin
       code:       String,
       stdout:     String,
       stderr:     String,
+      exit_code:  Int32,
       created_at: {type: Time, converter: TimeFormat.new("%F %T")}
     })
 
@@ -17,6 +18,7 @@ module Carcin
       @code       = run.code
       @stdout     = run.stdout
       @stderr     = run.stderr
+      @exit_code  = run.exit_code
       @created_at = run.created_at
     end
   end

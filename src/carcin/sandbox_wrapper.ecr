@@ -1,0 +1,16 @@
+args = [
+  "<%= path %>",
+  "-p",
+  "-d", "/dev/null:rw",
+  "-u", "<%= name %>",
+  <% if memory %>
+    "-m", "<%= memory %>",
+  <% end %>
+ "-t", "<%= timeout %>",
+ "-S", "<%= whitelist %>",
+  "--",
+  "/usr/bin/<%= name %>"
+]
+args += ARGV
+status = Process.run "/usr/bin/playpen", args
+exit status.exit.not_nil!

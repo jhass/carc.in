@@ -7,5 +7,8 @@ module Carcin
       version:  {type: String, nilable: true}
       code:     String
     }, true)
+
+    def initialize(@language, @version, @code)
+    end
   end
 end

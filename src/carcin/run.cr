@@ -6,11 +6,12 @@ module Carcin
     getter  code
     getter  stdout
     getter  stderr
+    getter  exit_code
     getter  created_at
 
     class Failed < Run
       def initialize(request, @error)
-        super request, "", ""
+        super request, "", "", 1
       end
 
       def save
@@ -23,16 +24,29 @@ module Carcin
     end
 
     def self.find_by_id id
-      new id, "crystal", "0.7.1", %(puts "hello world"), "test", "test", Time.now
+      new id, "crystal", "0.7.1", %(puts "hello world"), "test", "test", 0, Time.now
     end
 
-    def initialize(@id, @language, @version, @code, @stdout, @stderr, @created_at)
+    def initialize(@id, @language, @version, @code, @stdout, @stderr, @exit_code, @created_at)
     end
 
-    def initialize(request, @stdout, @stderr)
+    def initialize(request, @stdout, @stderr, @exit_code)
       @language = request.language
       @version  = request.version
       @code     = request.code
+    end
+
+    def signal
+      @stderr.match(/with signal (\d+)/).try &.[1].to_i
+    end
+
+    def successful?
+      return false if @stderr.includes?("Bad system call")
+      return false if @stderr.includes?("timeout triggered!")
+      return false if @stdout.includes?("error code: 31")
+      return false if signal
+
+      @exit_code == 0
     end
 
     def save

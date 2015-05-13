@@ -1,0 +1,32 @@
+{
+  "name": "crystal",
+  "versions": ["0.7.1"],
+  "dependencies": [
+    "binutils",
+    "gc",
+    "gcc",
+    "libatomic_ops",
+    "libunwind",
+    "libxml2",
+    "libyaml",
+    "llvm",
+    "pcre",
+    "libevent"
+  ],
+  "aur_dependencies": ["libpcl"],
+  "timeout": 5,
+  "memory":  256,
+  "allowed_programs": [
+    "puts \"hi\"",
+    "`ls -al`",
+    "exit",
+    "r, w = IO.pipe;  Process.run(\"/bin/cat\", output: w, input: \"hi\"); p(r.read(1))",
+    "LibC.popen(\"ls\", \"r\")",
+    "require \"compiler/crystal/**\"; Crystal::Parser.parse(\"foo { |x| x.bar }\")",
+    "sleep 0.01"
+  ],
+  "allowed_failing_programs": [
+    "putss \"hi\"",
+    "p 5/0"
+  ]
+}
