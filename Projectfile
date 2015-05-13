@@ -1,0 +1,4 @@
+deps do
+  github "dhruvrajvanshi/Moonshine"
+  github "will/crystal-pg"
+end
