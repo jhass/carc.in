@@ -36,7 +36,7 @@ module Carcin
         request.version = version
         if versions.includes? version
           status = capture executable_for(version), ["eval", request.code]
-          Run.new request, status.output.not_nil!, status.stderr.not_nil!, status.exit
+          Run.new request, status
         else
           Run.failed_for request, "unsupported version"
         end

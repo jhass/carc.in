@@ -1,0 +1,11 @@
+CREATE TABLE runs (
+  id SERIAL PRIMARY KEY,
+  language VARCHAR(100) NOT NULL,
+  version VARCHAR(10) NOT NULL,
+  code TEXT NOT NULL,
+  stdout TEXT NOT NULL,
+  stderr TEXT NOT NULL,
+  exit_code INT NOT NULL,
+  author_ip VARCHAR(39) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT 'now()'
+);

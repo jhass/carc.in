@@ -3,6 +3,7 @@ require "json"
 module Carcin
   class RunPresenter
     json_mapping({
+      id:         String,
       language:   String,
       version:    String,
       code:       String,
@@ -13,6 +14,7 @@ module Carcin
     })
 
     def initialize(run : Run)
+      @id         = Carcin::Base36.encode run.id.not_nil!
       @language   = run.language
       @version    = run.version
       @code       = run.code

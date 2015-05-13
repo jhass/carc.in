@@ -1,16 +1,18 @@
 module Carcin
   class Run
     getter! error
+    getter  id
     getter  language
     getter  version
     getter  code
     getter  stdout
     getter  stderr
     getter  exit_code
+    getter  author_ip
     getter  created_at
 
     class Failed < Run
-      def initialize(request, @error)
+      def initialize request, @error
         super request, "", "", 1
       end
 
@@ -23,17 +25,56 @@ module Carcin
       Failed.new request, message
     end
 
+    def self.from_request_and_status request, status
+      new status.output.not_nil!, status.stderr.not_nil!, status.exit
+    end
+
     def self.find_by_id id
-      new id, "crystal", "0.7.1", %(puts "hello world"), "test", "test", 0, Time.now
+      result = Carcin.db.exec(
+        "SELECT id, language, version, code, stdout, stderr, exit_code, author_ip, created_at
+         FROM runs
+        WHERE id = $1",
+        [id]
+      )
+
+      unless result.rows.empty?
+        row = result.to_hash.first
+        new row["id"] as Int32,
+            row["language"] as String,
+            row["version"] as String,
+            row["code"] as String,
+            row["stdout"] as String,
+            row["stderr"] as String,
+            row["exit_code"] as Int32,
+            row["author_ip"] as String,
+            row["created_at"] as Time
+      end
     end
 
-    def initialize(@id, @language, @version, @code, @stdout, @stderr, @exit_code, @created_at)
+    def initialize request, status
+      initialize(
+        request,
+        status.output.not_nil!,
+        status.stderr.not_nil!,
+        status.exit
+      )
     end
 
-    def initialize(request, @stdout, @stderr, @exit_code)
-      @language = request.language
-      @version  = request.version
-      @code     = request.code
+    def initialize request, stdout, stderr, exit_code
+      initialize(
+        nil,
+        request.language,
+        request.version,
+        request.code,
+        stdout,
+        stderr,
+        exit_code,
+        request.author_ip.to_s,
+        nil
+      )
+    end
+
+    def initialize(@id, @language, @version, @code, @stdout, @stderr, @exit_code, @author_ip, @created_at)
     end
 
     def signal
@@ -50,12 +91,16 @@ module Carcin
     end
 
     def save
-      @created_at = Time.now
-
-      if version.nil?
+      if @version.nil?
         @error = "no version available"
         false
       else
+        result = Carcin.db.exec(
+          "INSERT INTO runs (language, version, code, stdout, stderr, exit_code, author_ip)
+          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+          [@language, @version, @code, @stdout, @stderr, @exit_code, @author_ip]
+        )
+        @id = result.rows.first.first as Int32
         true
       end
     end
