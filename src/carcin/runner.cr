@@ -22,6 +22,7 @@ module Carcin
     end
 
     abstract def execute request
+    abstract def versions
 
     class Crystal
       include Runner
@@ -41,7 +42,7 @@ module Carcin
         end
       end
 
-      private def versions
+      def versions
         @versions ||= Dir["#{SANDBOX_BASEPATH}/*/"].map {|path| File.basename(path) }.sort.reverse
       end
 
