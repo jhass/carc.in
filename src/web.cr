@@ -140,4 +140,4 @@ app.post "/run_requests" do |request|
   end
 end
 
-app.run
+app.run(ENV["PORT"]?.try(&.to_i) || 8000)
