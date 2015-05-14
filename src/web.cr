@@ -66,8 +66,8 @@ end
 app.get "/" do |request|
   json({
     "languages_url": "#{Carcin::BASE_URL}/languages",
-    "run_url": "#{Carcin::BASE_URL}/run/{id}",
-    "run_request_url": "#{Carcin::BASE_URL}/run_request"
+    "run_url": "#{Carcin::BASE_URL}/runs/{id}",
+    "run_request_url": "#{Carcin::BASE_URL}/run_requests"
   })
 end
 
@@ -77,9 +77,23 @@ app.get "/languages" do |request|
   }.reject(&.versions.empty?)})
 end
 
-app.get "/run/:id" do |request|
-  id  = Carcin::Base36.decode request.params["id"]
-  run = Carcin::Run.find_by_id(id) if id
+app.get "/runs/:id" do |request|
+  begin
+    id  = Carcin::Base36.decode request.params["id"]
+    run = Carcin::Run.find_by_id(id) if id
+
+    if run
+      json({"run": Carcin::RunPresenter.new(run)})
+    else
+      not_found
+    end
+  rescue e
+    puts e.class
+    puts e.message
+    puts e.backtrace.join("\n")
+    json_error 500, "internal server error"
+  end
+end
 
 app.request_middleware do |request|
   if request.method == "OPTIONS"
@@ -100,7 +114,7 @@ app.request_middleware do |request|
   end
 end
 
-app.post "/run_request" do |request|
+app.post "/run_requests" do |request|
   begin
     if request.headers["Content-Type"].starts_with? "application/json"
       run_request = Carcin::RunRequest.from_json? request.body, "run_request"
