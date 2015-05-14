@@ -4,7 +4,12 @@ require "./carcin"
 
 include Moonshine::Shortcuts
 
-def Object.from_json? json
+def Object.from_json? json, root=nil
+  if root
+    object = JSON.parse(json) as Hash(String, JSON::Type)
+    object = object[root]?
+    json = object.to_json if object
+  end
   from_json json
 rescue e : JSON::ParseException
 end
@@ -81,21 +86,21 @@ end
 
 app.post "/run_request" do |request|
   begin
-    if request.headers["Content-Type"] != "application/json"
-      unprocessable "invalid content type"
-    else
-      run_request = Carcin::RunRequest.from_json? request.body
+    if request.headers["Content-Type"].starts_with? "application/json"
+      run_request = Carcin::RunRequest.from_json? request.body, "run_request"
       if run_request
         run_request.author_ip = client_ip request.headers
         run = Carcin::Runner.execute run_request
         if run.save
-          json Carcin::RunPresenter.new(run)
+          json({"run_request": {"run": Carcin::RunPresenter.new(run)}})
         else
           unprocessable run.error
         end
       else
         unprocessable "can't parse request"
       end
+    else
+      unprocessable "invalid content type"
     end
   rescue e
     puts e.class
