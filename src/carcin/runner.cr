@@ -23,6 +23,7 @@ module Carcin
 
     abstract def execute request
     abstract def versions
+    abstract def short_name
 
     class Crystal
       include Runner
@@ -40,6 +41,10 @@ module Carcin
         else
           Run.failed_for request, "unsupported version"
         end
+      end
+
+      def short_name
+        "cr"
       end
 
       def versions

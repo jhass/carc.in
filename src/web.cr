@@ -63,9 +63,9 @@ app.get "/" do |request|
 end
 
 app.get "/languages" do |request|
-  json Carcin::Runner::RUNNERS.map {|name, runner|
-    [name, runner.versions]
-  }.reject(&.last.empty?).to_h
+  json({"languages": Carcin::Runner::RUNNERS.map {|name, runner|
+    Carcin::LanguagePresenter.new(name, runner)
+  }.reject(&.versions.empty?)})
 end
 
 app.get "/run/:id" do |request|
