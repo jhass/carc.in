@@ -19,17 +19,19 @@ code {
   @include outer-container;
 
   &.run_request {
+    @include span-columns(12);
+
     h2, textarea {
-      @include shift(1 of 9);
+      @include shift(3);
     }
 
 
     h2 {
-      @include span-columns(8 of 9);
+      @include span-columns(9);
     }
 
     textarea {
-      @include span-columns(7 of 9);
+      @include span-columns(9);
       height: 70vh;
       margin-bottom: 1em;
 
@@ -39,12 +41,12 @@ code {
     }
 
     #language {
-      @include span-columns(2 of 9);
-      @include shift(4 of 9);
+      @include span-columns(3);
+      @include shift(7);
     }
 
     button {
-      @include span-columns(2 of 9);
+      @include span-columns(2);
     }
   }
 
