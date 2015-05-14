@@ -10,7 +10,7 @@ module Carcin
       stdout:     String,
       stderr:     String,
       exit_code:  Int32,
-      created_at: {type: Time, converter: TimeFormat.new("%F %T")}
+      created_at: {type: Time, converter: TimeFormat.new("%FT%TZ")}
     })
 
     def initialize(run : Run)

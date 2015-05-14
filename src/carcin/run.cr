@@ -31,9 +31,9 @@ module Carcin
 
     def self.find_by_id id
       result = Carcin.db.exec(
-        "SELECT id, language, version, code, stdout, stderr, exit_code, author_ip, created_at
+        "SELECT id, language, version, code, stdout, stderr, exit_code, author_ip, created_at AT TIME ZONE 'UTC' AS created_at
          FROM runs
-        WHERE id = $1",
+         WHERE id = $1",
         [id]
       )
 
@@ -97,10 +97,11 @@ module Carcin
       else
         result = Carcin.db.exec(
           "INSERT INTO runs (language, version, code, stdout, stderr, exit_code, author_ip)
-          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+           VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, created_at AT TIME ZONE 'UTC' AS created_at",
           [@language, @version, @code, @stdout, @stderr, @exit_code, @author_ip]
-        )
-        @id = result.rows.first.first as Int32
+        ).rows.first
+        @id         = result[0] as Int32
+        @created_at = result[1] as Time
         true
       end
     end
