@@ -25,16 +25,20 @@ module Enumerable
 end
 
 def json object
-  ok(object.to_json).tap do |response|
-    response.headers["Content-Type"] = "application/json"
+  ok(object.to_pretty_json).tap do |response|
+    response.headers["Content-Type"] = "application/json; charset=utf-8"
+    response.headers["Access-Control-Allow-Origin"] = "*"
   end
 end
 
 def json_error status, message
   Moonshine::Http::Response.new(
     status,
-    %({"error": "#{message}"}),
-    HTTP::Headers {"Content-Type" => "application/json"}
+    %({"error": {"message": "#{message}"}}),
+    HTTP::Headers {
+      "Content-Type" => "application/json; charset=utf-8",
+      "Access-Control-Allow-Origin" => "*"
+    }
   )
 end
 
@@ -77,10 +81,22 @@ app.get "/run/:id" do |request|
   id  = Carcin::Base36.decode request.params["id"]
   run = Carcin::Run.find_by_id(id) if id
 
-  if run
-    json Carcin::RunPresenter.new(run)
+app.request_middleware do |request|
+  if request.method == "OPTIONS"
+    Moonshine::MiddlewareResponse.new(
+      Moonshine::Http::Response.new(
+        204,
+        "",
+        HTTP::Headers {
+          "Access-Control-Allow-Origin" => "*",
+          "Access-Control-Allow-Methods" => "GET, POST, PATCH, PUT, DELETE",
+          "Access-Control-Allow-Headers" => "Content-Type"
+        }
+      ),
+      pass_through: false
+    )
   else
-    not_found
+    Moonshine::MiddlewareResponse.new
   end
 end
 
