@@ -127,7 +127,7 @@ end
 
 def replace_version version
   File.write "PKGBUILD", File.read_lines("PKGBUILD").map {|line|
-    line.gsub(/^version=.+$/, "version=#{version}")
+    line.gsub(/^pkgver=.+$/, "pkgver=#{version}")
         .gsub(/^_last_release=.+$/, "_last_release=#{version}")
   }.join
   system "updpkgsums"
@@ -193,13 +193,13 @@ end
 
 def test_programs definition, version
   definition.allowed_programs.each do |program|
-    run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program)
+    run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program, "sandbox.builder")
     puts "Exited with #{run.exit_code} for: #{program}"
     return false unless run.successful?
   end
 
   definition.allowed_failing_programs.each do |program|
-    run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program)
+    run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program, "sandbox.builder")
     puts "Exited with #{run.exit_code} for: #{program}"
     if run.stderr.starts_with?("playpen")
       return false if (run.signal && run.signal == 31) || run.stderr.includes?("timeout triggered!")
