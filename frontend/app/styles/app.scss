@@ -1,0 +1,113 @@
+@import "bower_components/bourbon/app/assets/stylesheets/bourbon";
+@import "grid-settings";
+@import "bower_components/neat/app/assets/stylesheets/neat";
+@import "variables";
+@import "bower_components/bitters/app/assets/stylesheets/forms";
+@import "bower_components/bitters/app/assets/stylesheets/buttons";
+@import "dropdown";
+@import "ansi-theme";
+@import "hljs-line-numbers";
+
+code {
+  padding: 0.5em;
+  display: block;
+  overflow-y: auto;
+  background-color: $code-bg;
+}
+
+#main {
+  @include outer-container;
+
+  &.run_request {
+    h2, textarea {
+      @include shift(1 of 9);
+    }
+
+
+    h2 {
+      @include span-columns(8 of 9);
+    }
+
+    textarea {
+      @include span-columns(7 of 9);
+      height: 70vh;
+      margin-bottom: 1em;
+
+      &:focus {
+        border: $base-border;
+      }
+    }
+
+    #language {
+      @include span-columns(2 of 9);
+      @include shift(4 of 9);
+    }
+
+    button {
+      @include span-columns(2 of 9);
+    }
+  }
+
+  &.run {
+    div.code, div.output {
+      @include span-columns(6);
+
+      h3, pre {
+        @include span-columns(6 of 6);
+      }
+    }
+
+    div.code {
+      h3 {
+        @include span-columns(3 of 6);
+      }
+
+      .new-link {
+        @include span-columns(3 of 6);
+        text-align: right;
+        margin: 1.3em 0 1.3em 0;
+        font-size: 0.9em;
+        height: 1.55em;
+      }
+
+      pre {
+        margin-bottom: 0;
+      }
+
+      .metadata {
+        @include fill-parent();
+        @include row(table);
+        background-color: darken($code-bg, 10);
+        font-size: 0.6em;
+        padding: 0.5em;
+
+        .created_at {
+          @include span-columns(9);
+          @include pad(0 default 0 0);
+        }
+
+        .exit_code {
+          @include span-columns(2);
+          @include omega;
+          @include pad(0 0 0 default);
+          // margin-left: flex-gutter();
+
+          &:before {
+            content: "Exited with: ";
+          }
+
+          &:after {
+            content: " | "
+          }
+        }
+
+        .language {
+          @include span-columns(1);
+          @include reset-display;
+          text-align: center;
+          // @include omega;
+        }
+      }
+    }
+  }
+}
