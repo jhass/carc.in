@@ -6,7 +6,7 @@ Consists of:
 
 * Backend API server
 * Frontend
-* Sandbox manager
+* Sandbox manager (designed for Archlinux host with an BTRFS filesystem available)
 
 ## Supported languages
 
