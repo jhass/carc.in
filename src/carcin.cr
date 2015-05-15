@@ -5,7 +5,7 @@ module Carcin
   SANDBOX_BASEPATH = File.expand_path File.join(__DIR__, "..", "sandboxes")
 
   def self.db
-    @@db ||= PG.connect("postgres:///carc")
+    @@db ||= PG.connect("postgres:///#{ENV["DB"]? || "carcin"}")
   end
 end
 
