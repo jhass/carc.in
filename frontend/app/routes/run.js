@@ -6,7 +6,7 @@ export default Ember.Route.extend({
     new: function() {
       this.transitionTo('run_request');
     },
-    error: function(error, transition) {
+    error: function() {
       this.transitionTo('run_request');
     }
   },

@@ -29,7 +29,7 @@ export default Ember.Component.extend({
   defaultVersion: function() {
     var _this = this,
         version = this.get('versions').filter(function(language) {
-          return language.id == _this.get('languageId');
+          return language.id === _this.get('languageId');
         })[0];
 
     if (version) {
