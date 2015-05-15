@@ -10,7 +10,9 @@ module Carcin
       stdout:     String,
       stderr:     String,
       exit_code:  Int32,
-      created_at: {type: Time, converter: TimeFormat.new("%FT%TZ")}
+      created_at: {type: Time, converter: TimeFormat.new("%FT%TZ")},
+      url:        String,
+      html_url:   String
     })
 
     def initialize(run : Run)
@@ -22,6 +24,8 @@ module Carcin
       @stderr     = run.stderr
       @exit_code  = run.exit_code
       @created_at = run.created_at
+      @url        = "%s/runs/%s" % {Carcin::BASE_URL, @id}
+      @html_url   = "%s/#/r/%s" % {Carcin::FRONTEND_URL, @id}
     end
   end
 end
