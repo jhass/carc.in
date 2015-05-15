@@ -65,8 +65,12 @@ code {
     div.code, div.output {
       @include span-columns(6);
 
+      @include media($small-display) {
+        @include span-columns(12);
+      }
+
       h3, pre {
-        @include span-columns(6 of 6);
+        @include span-columns(12);
       }
     }
 
@@ -87,38 +91,36 @@ code {
         margin-bottom: 0;
       }
 
-      .metadata {
-        @include fill-parent();
-        @include row(table);
-        background-color: darken($code-bg, 10);
-        font-size: 0.6em;
-        padding: 0.5em;
+      @include direction-context(right-to-left) {
+        .metadata {
+          @include fill-parent();
+          @include row(table);
+          background-color: darken($code-bg, 10);
+          font-size: 0.6em;
+          padding: 0.5em;
 
-        .created_at {
-          @include span-columns(9);
-          @include pad(0 default 0 0);
-        }
-
-        .exit_code {
-          @include span-columns(2);
-          @include omega;
-          @include pad(0 0 0 default);
-          // margin-left: flex-gutter();
-
-          &:before {
-            content: "Exited with: ";
+          .created_at {
+            @include span-columns(7);
+            @include pad(0 default 0 0);
           }
 
-          &:after {
-            content: " | "
-          }
-        }
+          .right_metadata {
+            @include span-columns(5);
+            text-align: right;
 
-        .language {
-          @include span-columns(1);
-          @include reset-display;
-          text-align: center;
-          // @include omega;
+            .exit_code {
+              &:before {
+                content: "Exited with: ";
+              }
+
+              &:after {
+                content: " | "
+              }
+            }
+
+            .language {
+            }
+          }
         }
       }
     }
