@@ -30,19 +30,16 @@ code {
   }
 
   &.run_request {
-    @include span-columns(12);
-
     h2, textarea {
-      @include shift(3);
+      @include shift(1);
     }
 
-
     h2 {
-      @include span-columns(9);
+      @include span-columns(10);
     }
 
     textarea {
-      @include span-columns(9);
+      @include span-columns(10);
       height: 70vh;
       margin-bottom: 1em;
 
@@ -51,13 +48,25 @@ code {
       }
     }
 
-    #language {
-      @include span-columns(3);
-      @include shift(7);
-    }
+    #controls {
+      @include span-columns(10);
+      @include shift(1);
+      text-align: right;
 
-    button {
-      @include span-columns(2);
+      > div, button {
+        display: inline-block;
+      }
+
+      button {
+        float: right;
+        margin-left: flex-gutter();
+      }
+
+      .dropdown {
+        .dropdown-description, .dropdown-button {
+          font-size: 1em;
+        }
+      }
     }
   }
 
