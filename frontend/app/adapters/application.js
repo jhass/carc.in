@@ -1,3 +1,5 @@
+import ENV from 'carcin/config/environment';
+
 export default DS.ActiveModelAdapter.extend({
-  host: "http://carc.dev"
+  host: ENV.apiHost
 });
