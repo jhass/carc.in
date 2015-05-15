@@ -21,9 +21,11 @@ code {
 
   &.loading {
     .spinner {
-      @include span-columns(4);
-      @include shift(4);
-      margin-top: 30vh;
+      margin: 0 auto;
+      width: 95%;
+      position: absolute;
+      left: 0;
+      top: 45vh;
     }
   }
 
