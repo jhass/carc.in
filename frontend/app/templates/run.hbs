@@ -14,13 +14,16 @@
   {{#if model.pretty_stderr}}
     <div class="stderr">
       <h3>Error output</h3>
-      {{source-code code=model.stderr language='nohighlight'}}
+      {{source-code code=model.pretty_stderr language='nohighlight'}}
     </div>
   {{/if}}
 
   <div class="stdout">
     <h3>Output</h3>
-    {{source-code code=model.stdout language='nohighlight'}}
-
+    {{#if model.stdout}}
+      {{source-code code=model.stdout language='nohighlight'}}
+    {{else}}
+      There was no output.
+    {{/if}}
   </div>
 </div>

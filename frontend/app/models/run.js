@@ -1,5 +1,9 @@
 import { LanguageNames } from 'carcin/app';
 
+var PlaypenMessages = {
+  'timeout triggered!': 'Execution timed out.'
+};
+
 export default DS.Model.extend({
   language:   DS.attr('string'),
   version:    DS.attr('string'),
@@ -10,10 +14,23 @@ export default DS.Model.extend({
   created_at: DS.attr('date'),
 
   pretty_stderr: function() {
-    return this.get('stderr').split("\n").filter(function(line) {
-      return line.substr(0, 8) !== 'playpen:';
+    var foo = this.get('stderr').split("\n").map(function(line) {
+      if (line.substr(0, 8) !== 'playpen:') {
+        return line;
+      }
+
+      for (var message in PlaypenMessages) {
+        if (line.substr(9) ===  message) {
+          return PlaypenMessages[message];
+        }
+      }
+
+      return null;
+    }).filter(function(line) {
+      return line !== null;
     }).join("\n");
-  }.property(),
+    return foo;
+  }.property('stderr'),
 
   languageName: function() {
     return LanguageNames[this.get('language')];
