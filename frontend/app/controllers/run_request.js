@@ -6,8 +6,10 @@ export default Ember.Controller.extend({
     },
     submit: function() {
       var _this = this;
-      this.get('model').save().then(function(request) {
-        _this.transitionTo('run', request.get('run'));
+      this.transitionTo('loading').then(function() {
+        _this.get('model').save().then(function(request) {
+          _this.transitionTo('run', request.get('run'));
+        });
       });
     }
   }

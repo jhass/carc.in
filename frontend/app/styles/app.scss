@@ -4,6 +4,7 @@
 @import "variables";
 @import "bower_components/bitters/app/assets/stylesheets/forms";
 @import "bower_components/bitters/app/assets/stylesheets/buttons";
+@import "spinner";
 @import "dropdown";
 @import "ansi-theme";
 @import "hljs-line-numbers";
@@ -17,6 +18,14 @@ code {
 
 #main {
   @include outer-container;
+
+  &.loading {
+    .spinner {
+      @include span-columns(4);
+      @include shift(4);
+      margin-top: 30vh;
+    }
+  }
 
   &.run_request {
     @include span-columns(12);
