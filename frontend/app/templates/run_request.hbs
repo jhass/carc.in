@@ -1,4 +1,6 @@
-{{textarea value=model.code autofocus='1'}}
+<div id="editor">
+  {{ivy-codemirror value=model.code autofocus='1' lineNumbers='true' theme='neat' mode=editorLanguage}}
+</div>
 
 <div id="controls">
   {{language-select languages=languages languageId=languageId language=model.language version=model.version action="updateRequest"}}

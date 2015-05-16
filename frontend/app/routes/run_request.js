@@ -10,7 +10,7 @@ export default Ember.Route.extend({
       this.controller.send('submit');
     }
   },
-  setupController: function(controller, model, transition) {
+  setupController: function(controller, model) {
     var title = 'Compile & run code in ' + LanguageNames[this.get('languageId')];
     this.controllerFor('application').set('title', title);
     document.title = title;

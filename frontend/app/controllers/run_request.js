@@ -15,5 +15,8 @@ export default Ember.Controller.extend({
         });
       });
     }
-  }
+  },
+  editorLanguage: function() {
+    return 'ruby';
+  }.property('model.language')
 });

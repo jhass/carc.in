@@ -1,7 +1,7 @@
 @import "bower_components/bourbon/app/assets/stylesheets/bourbon";
 @import "grid-settings";
-@import "bower_components/neat/app/assets/stylesheets/neat";
 @import "variables";
+@import "bower_components/neat/app/assets/stylesheets/neat";
 @import "bower_components/bitters/app/assets/stylesheets/forms";
 @import "bower_components/bitters/app/assets/stylesheets/buttons";
 @import "spinner";
@@ -30,7 +30,7 @@ code {
   }
 
   &.run_request, &.run\.edit {
-    h2, textarea {
+    h2, #editor {
       @include shift(1);
     }
 
@@ -38,10 +38,13 @@ code {
       @include span-columns(10);
     }
 
-    textarea {
+    #editor {
       @include span-columns(10);
-      height: 70vh;
       margin-bottom: 1em;
+
+      .CodeMirror {
+        height: 70vh;
+      }
 
       &:focus {
         border: $base-border;
