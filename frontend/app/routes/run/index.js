@@ -9,9 +9,6 @@ export default Ember.Route.extend({
     },
     edit: function() {
       this.transitionTo('run.edit', this.get('controller.model'));
-    },
-    error: function() {
-      this.transitionTo('run_request');
     }
   },
   afterModel: function(resolvedModel) {
