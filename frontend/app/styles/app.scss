@@ -44,6 +44,10 @@ code {
 
       .CodeMirror {
         height: 70vh;
+
+        .CodeMirror-gutter {
+          background-color: white;
+        }
       }
 
       &:focus {
