@@ -29,7 +29,7 @@ code {
     }
   }
 
-  &.run_request {
+  &.run_request, &.run\.edit {
     h2, textarea {
       @include shift(1);
     }
@@ -79,7 +79,7 @@ code {
     }
   }
 
-  &.run {
+  &.run\.index {
     div.code, div.output {
       @include span-columns(6);
 
@@ -94,11 +94,11 @@ code {
 
     div.code {
       h3 {
-        @include span-columns(3 of 6);
+        @include span-columns(6);
       }
 
-      .new-link {
-        @include span-columns(3 of 6);
+      #controls {
+        @include span-columns(6);
         text-align: right;
         margin: 1.3em 0 1.3em 0;
         font-size: 0.9em;

@@ -29,7 +29,11 @@ export default Ember.Component.extend({
   defaultVersion: function() {
     var _this = this,
         version = this.get('versions').filter(function(language) {
-          return language.id === _this.get('languageId');
+          if (_this.get('language') !== undefined && _this.get('version') !== undefined) {
+            return language.name === _this.get('language') && language.version === _this.get('version');
+          } else {
+            return language.id === _this.get('languageId') || language.name === _this.get('languageId');
+          }
         })[0];
 
     if (version) {
@@ -37,7 +41,7 @@ export default Ember.Component.extend({
     }
 
     return version;
-  }.property('versions', 'languageId'),
+  }.property('language', 'version', 'versions', 'languageId'),
   actions: {
     activate: function() {
       var _this = this;

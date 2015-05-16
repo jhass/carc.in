@@ -8,5 +8,7 @@ var Router = Ember.Router.extend({
 export default Router.map(function() {
   this.route('run_request', {path: '/crystal'});
   this.route('run_request', {path: '/cr'});
-  this.route('run', {path: '/r/:run_id'});
+  this.resource('run', {path: '/r/:run_id'}, function() {
+    this.route('edit');
+  });
 });

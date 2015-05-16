@@ -1,19 +1,19 @@
 export default Ember.Route.extend({
   shortcuts: {
-    'n': 'new'
+    'n': 'new',
+    'e': 'edit'
   },
   actions: {
     new: function() {
       this.transitionTo('run_request');
     },
+    edit: function() {
+      this.transitionTo('run.edit', this.get('controller.model'));
+    },
     error: function() {
       this.transitionTo('run_request');
     }
   },
-  // setupController: function(controller, model) {
-  //   controller.set('model', model);
-  //   debugger;
-  // },
   afterModel: function(resolvedModel) {
     var title = "Run #"+resolvedModel.get('id');
     document.title = title + ' | Compile & run code in ' + resolvedModel.languageName();

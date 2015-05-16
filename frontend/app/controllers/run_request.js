@@ -1,4 +1,7 @@
 export default Ember.Controller.extend({
+  shortcuts: {
+    'ctrl+enter': 'submit'
+  },
   actions: {
     updateRequest: function(language, version) {
       this.set('model.language', language);

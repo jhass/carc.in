@@ -1,6 +1,6 @@
 {{textarea value=model.code autofocus='1'}}
 
 <div id="controls">
-  {{language-select languages=languages languageId=languageId action="updateRequest"}}
+  {{language-select languages=languages languageId=languageId language=model.language version=model.version action="updateRequest"}}
   <button {{action 'submit'}}>Compile &amp; run code</button>
 </div>

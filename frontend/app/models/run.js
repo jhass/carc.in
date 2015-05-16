@@ -1,7 +1,8 @@
 import { LanguageNames } from 'carcin/app';
 
 var PlaypenMessages = {
-  'timeout triggered!': 'Execution timed out.'
+  'timeout triggered!': 'Execution timed out.',
+  'write: Resource temporarily unavailable': 'Execution timed out or too much output.'
 };
 
 export default DS.Model.extend({

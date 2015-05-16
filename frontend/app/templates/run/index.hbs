@@ -1,12 +1,18 @@
 <div class="code">
   <h3>Code</h3>
-  {{link-to 'Run something else' 'run_request' class="new-link"}}
+  <div id="controls">
+    {{link-to 'New' 'run_request' class="new-link" tagName="button"}}
+
+    <button {{action 'edit'}}>Edit</button>
+  </div>
+
   {{source-code code=model.code language=model.language}}
+
   <div class="metadata">
     <span class="created_at">{{model.created_at}}</span>
     <div class="right_metadata">
       <span class="exit_code">{{model.exit_code}}</span>
-      <span class="language">{{language-name model.language}}</span>
+      <span class="language">{{language-name model.language}} {{model.version}}</span>
     </div>
   </div>
 </div>
