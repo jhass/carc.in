@@ -2,11 +2,15 @@ export default Ember.Route.extend({
   controllerName: 'run_request',
   templateName: 'run_request',
   shortcuts: {
-    'ctrl+enter': 'submit'
+    'ctrl+enter': 'submit',
+    'esc': 'showRun'
   },
   actions: {
     submit: function() {
       this.controller.send('submit');
+    },
+    showRun: function() {
+      this.transitionTo('run', this.get('run'));
     }
   },
   setupController: function(controller, model) {
@@ -16,6 +20,7 @@ export default Ember.Route.extend({
           code: model.get('code')
         }),
         title = 'Compile & run code in ' + model.languageName();
+    this.set('run', model);
     controller.shortcuts.get('filters').clear();
     controller.set('model', request);
     controller.set('languages', this.store.find('language'));
