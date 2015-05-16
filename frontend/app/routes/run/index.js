@@ -1,3 +1,5 @@
+import ENV from 'carcin/config/environment';
+
 export default Ember.Route.extend({
   shortcuts: {
     'n': 'new',
@@ -5,7 +7,7 @@ export default Ember.Route.extend({
   },
   actions: {
     new: function() {
-      this.transitionTo('run_request');
+      this.transitionTo('run_request', ENV.defaultLanguage);
     },
     edit: function() {
       this.transitionTo('run.edit', this.get('controller.model'));

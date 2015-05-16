@@ -1,4 +1,6 @@
 export default Ember.Route.extend({
+  controllerName: 'run_request',
+  templateName: 'run_request',
   shortcuts: {
     'ctrl+enter': 'submit'
   },
@@ -7,8 +9,6 @@ export default Ember.Route.extend({
       this.controller.send('submit');
     }
   },
-  controllerName: 'run_request',
-  templateName: 'run_request',
   setupController: function(controller, model) {
     var request = this.store.createRecord('run-request', {
           language: model.get('language'),
