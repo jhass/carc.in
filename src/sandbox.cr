@@ -2,31 +2,6 @@ require "tempfile"
 require "ecr/macros"
 require "./carcin"
 
-class SandboxDefinition
-  json_mapping({
-    name:                     String,
-    versions:                 Array(String),
-    dependencies:             Array(String),
-    aur_dependencies:         Array(String),
-    timeout:                  Int32,
-    memory:                   {type: Int32, nilable: true},
-    allowed_programs:         Array(String),
-    allowed_failing_programs: Array(String)
-  }, true)
-end
-
-class SandboxWrapper
-  getter path
-  getter name
-  getter timeout
-  getter memory
-  getter whitelist
-  ecr_file "#{__DIR__}/carcin/sandbox_wrapper.ecr"
-
-  def initialize(@path, @name, @timeout, @memory, @whitelist)
-  end
-end
-
 lib LibC
   fun getuid() : Int32
   fun setuid(uid : Int32) : Int32
@@ -51,190 +26,511 @@ unless fs_type == "btrfs"
   abort "#{Carcin::SANDBOX_BASEPATH} must be on a btrfs filesystem."
 end
 
-def create_subvolume path
-  Dir.mkdir_p File.dirname(path)
-  system("btrfs subvolume create #{path}")
+class SandboxDefinition
+  json_mapping({
+    name:                     String,
+    versions:                 Array(String),
+    dependencies:             Array(String),
+    aur_dependencies:         Array(String),
+    timeout:                  Int32,
+    memory:                   {type: Int32, nilable: true},
+    allowed_programs:         Array(String),
+    allowed_failing_programs: Array(String)
+  }, true)
 end
 
-def create_snapshot of, path
-  Dir.mkdir_p File.dirname(path)
-  system("btrfs subvolume snapshot #{of} #{path}")
-end
+class Cli
+  ARGUMENT_DEFAULTS = {
+    language: {
+      "build-base": "base",
+      "drop-base":  "base",
+      "update":     "base"
+    },
+    version: {
+      "build-base":         nil,
+      "drop-base":          nil,
+      "update":             nil,
+      "update":             "all",
+      "build":              "all",
+      "drop":               "all",
+      "rebuild":            "all",
+      "build-wrapper":      "all",
+      "generate-whitelist": "all"
+    }
+  }
 
-def pacstrap path, packages
-  system("pacstrap -cd #{path} #{packages.join(' ')}")
-end
+  def initialize arguments
+    help if (arguments & %w(help -h --help)).any? || arguments.size <= 1
 
-def chrooted_system chroot, command
-  system("arch-chroot #{chroot} #{command}")
-end
-
-def create_user chroot, name
-  chrooted_system chroot, "useradd -m #{name}"
-end
-
-BASE_SANDBOX = File.join Carcin::SANDBOX_BASEPATH, "bases", "base"
-BASE_PACKAGES = %w(bash coreutils shadow file grep sed pacman)
-
-def ensure_base
-  return if File.directory? BASE_SANDBOX
-
-  create_subvolume BASE_SANDBOX
-  pacstrap BASE_SANDBOX, BASE_PACKAGES
-  File.open(File.join(BASE_SANDBOX, "etc/locale.gen"), "a") do |io|
-    io.puts "\nen_US.UTF-8 UTF-8"
+    @command  = arguments[0]
+    @language = arguments[1]? || ARGUMENT_DEFAULTS[:language].fetch(@command) { help }
+    @version  = arguments[2]? || ARGUMENT_DEFAULTS[:version].fetch(@command) { help }
   end
-  File.write File.join(BASE_SANDBOX, "etc/locale.conf"), "LANG=en_US.UTF-8"
-  Dir.mkdir_p File.join(BASE_SANDBOX, "dev/shm")
-  system "mknod -m666 #{File.join(BASE_SANDBOX, "dev/null")} c 1 3"
-  chrooted_system BASE_SANDBOX, "locale-gen"
-end
 
-def switch_user uid
-  raise Errno.new "Can't switch to user #{uid}" unless LibC.setuid(uid.to_i) == 0
-end
+  def run commands
+    command = commands.fetch(@command) { help }
+    command.run(@language, @version)
+  end
 
-def as_user uid
-  pid = Process.fork do
-    switch_user uid
-    yield
+  def help
+    puts "Build and manage sandboxes"
+    puts
+    puts "  help, -h, --help                                         Display this."
+    puts "  build-base         <language>|[base]                     Build base chroot."
+    puts "  drop-base          <language>|[base]                     Drop base chroot."
+    puts "  update             <language>|all|[base] <version>|[all] Update base chroot and rebuild (all) sandboxes."
+    puts "  build              <language>|all        <version>|[all] Build (all) sandboxes."
+    puts "  drop               <language>|all        <version>|[all] Drop (all) sandboxes."
+    puts "  rebuild            <language>|all        <version>|[all] Rebuild (all) sandboxes."
+    puts "  build-wrapper      <language>|all        <version>|[all] (Re)build (all) playpen wrappers."
+    puts "  generate-whitelist <language>|all        <version>|[all] Generate new syscall whitelist."
+    puts
     exit 0
   end
-
-  Process.waitpid pid
 end
 
-PKG_BASEPATH = File.join Carcin::SANDBOX_BASEPATH, "pkgs"
+module Command
+  def run language, version
+    if language == "all"
+      languages.each do |language|
+        run language, version
+      end
 
-def build_package name, version=nil
-  suffix = version ?  "-#{version}" : ""
-  uid = File.stat(Carcin::SANDBOX_BASEPATH).uid
-  as_user(uid) do
-    Dir.mkdir_p PKG_BASEPATH
-    Dir.chdir(PKG_BASEPATH) do
-      File.rename "#{name}#{suffix}", name if File.exists? "#{name}#{suffix}"
-      system "yaourt --noconfirm -G #{name}"
-      File.rename name, "#{name}#{suffix}"
-      Dir.chdir("#{name}#{suffix}") do
-        replace_version version if version
-        unless system("makepkg -s")
-          abort "Failed to build #{name}#{suffix}"
+      return
+    end
+
+    if version == "all"
+      versions_for(language).each do |version|
+        execute definition_for(language), version
+      end
+
+      return
+    end
+
+    unless language == "base" || languages.includes? language
+      abort "No definition for #{language}"
+    end
+
+    unless version.nil? || versions_for(language).includes? version
+      abort "No definition for #{language} #{version}"
+    end
+
+    if language == "base"
+      execute_base
+    else
+      execute definition_for(language), version
+    end
+  end
+
+  def execute_base
+    abort "This is not a base command."
+  end
+
+  def versions_for language
+    definition_for(language).try(&.versions) || [] of String
+  end
+
+  def definition_for language
+    definition = definitions.find(&.name.==(language))
+    raise "No definition found for #{language}" unless definition
+    definition
+  end
+
+  def languages
+    definitions.map &.name
+  end
+
+  def definitions
+    @definitions ||= Dir["#{Carcin::SANDBOX_BASEPATH}/definitions/*.json"].map {|path|
+      begin
+        SandboxDefinition.from_json File.read(path)
+      rescue e
+        abort "Failed to parse #{path}: #{e.message}."
+      end
+    }
+  end
+
+  def ensure_path_to definition
+    Dir.mkdir_p path_to(definition)
+  end
+
+  def path_to definition, version=nil
+    path = File.join Carcin::SANDBOX_BASEPATH, definition.name
+    version ? File.join(path, version) : path
+  end
+
+  def base_path
+    File.join Carcin::SANDBOX_BASEPATH, "bases", "base"
+  end
+
+  def base_path_for language
+    File.join Carcin::SANDBOX_BASEPATH, "bases", language
+  end
+
+  def wrapper_path definition, version
+    File.join path_to(definition), "sandboxed_#{definition.name}#{version}"
+  end
+
+  def whitelist_path definition, version
+    File.join path_to(definition), "sandbox_whitelist#{version}"
+  end
+
+  def chrooted_system chroot, command
+    system %(arch-chroot "#{chroot}" #{command})
+  end
+end
+
+module BtrfsSubvolumeCommands
+  def create_subvolume path
+    system %(btrfs subvolume create "#{path}")
+  end
+
+  def create_snapshot of, path
+    system %(btrfs subvolume snapshot "#{of}" "#{path}")
+  end
+
+  def delete_subvolume path
+    system %(btrfs subvolume delete "#{path}")
+  end
+end
+
+module BaseCommand
+  def execute_base
+    execute "base"
+  end
+end
+
+module PackageBuilder
+  PKG_BASEPATH = File.join Carcin::SANDBOX_BASEPATH, "pkgs"
+
+  def build_package name, version=nil
+    suffix = version ?  "-#{version}" : ""
+    uid = File.stat(Carcin::SANDBOX_BASEPATH).uid
+    as_user(uid) do
+      Dir.mkdir_p PKG_BASEPATH
+      Dir.chdir(PKG_BASEPATH) do
+        File.rename "#{name}#{suffix}", name if File.exists? "#{name}#{suffix}"
+        system "yaourt --noconfirm -G #{name}"
+        File.rename name, "#{name}#{suffix}"
+        Dir.chdir("#{name}#{suffix}") do
+          replace_version version if version
+          unless system("makepkg -s")
+            abort "Failed to build #{name}#{suffix}"
+          end
         end
       end
     end
   end
-end
 
-def replace_version version
-  File.write "PKGBUILD", File.read_lines("PKGBUILD").map {|line|
-    line.gsub(/^pkgver=.+$/, "pkgver=#{version}")
-        .gsub(/^_last_release=.+$/, "_last_release=#{version}")
-  }.join
-  system "updpkgsums"
-end
-
-def install_package sandbox, name, version=nil
-  suffix = version ?  "-#{version}" : ""
-  pkg = Dir["#{PKG_BASEPATH}/#{name}#{suffix}/#{name}-#{version}*.pkg.tar.xz"].first
-  if pkg
-    tmp_pkg = File.join sandbox, "tmp.pkg.tar.xz"
-    system %(cp "#{pkg}" "#{tmp_pkg}")
-    success = chrooted_system sandbox, "pacman --noconfirm -U /tmp.pkg.tar.xz"
-    File.delete tmp_pkg
-    abort "Failed to install #{pkg}" unless success
-  else
-    abort "No package built for #{name}#{suffix}"
-  end
-end
-
-def generate_wrapper sandbox, definition, version
-  wrapper = File.expand_path File.join(sandbox, "../sandboxed_#{definition.name}#{version}")
-  whitelist = File.expand_path File.join(sandbox, "../sandboxed_whitelist#{version}")
-  file = Tempfile.open("sandbox_wrapper") do |io|
-    SandboxWrapper.new(
-      sandbox,
-      definition.name,
-      definition.timeout,
-      definition.memory,
-      whitelist
-    ).to_s(io)
+  def replace_version version
+    File.write "PKGBUILD", File.read_lines("PKGBUILD").map {|line|
+      line.gsub(/^pkgver=.+$/, "pkgver=#{version}")
+          .gsub(/^_last_release=.+$/, "_last_release=#{version}")
+    }.join
+    system "updpkgsums"
   end
 
-  unless system %(crystal build --release -o "#{wrapper}" "#{file.path}")
-    abort "Failed to build #{wrapper}"
+  def switch_user uid
+    unless LibC.setuid(uid.to_i) == 0
+      raise Errno.new "Can't switch to user #{uid}"
+    end
   end
 
-  file.delete
+  def as_user uid
+    pid = Process.fork do
+      switch_user uid
+      yield
+      exit 0
+    end
 
-  system %(chmod 4755 "#{wrapper}")
-end
+    Process.waitpid pid
+  end
 
-ifdef x86_64
-  ALL_SYSCALLS_LIST = "all_syscalls64"
-else
-  ALL_SYSCALLS_LIST = "all_syscalls32"
-end
-
-def generate_whitelist sandbox, definition, version
-  whitelist = File.expand_path File.join(sandbox, "../sandboxed_whitelist#{version}")
-  all_syscalls = File.read_lines File.join(Carcin::SANDBOX_BASEPATH, "definitions", ALL_SYSCALLS_LIST)
-  needed_syscalls = all_syscalls.dup
-  all_syscalls.each do |syscall|
-    puts "Try without #{syscall}"
-    File.write whitelist, (needed_syscalls - [syscall]).join
-    if test_programs definition, version
-      puts "Removing #{syscall}"
-      needed_syscalls = needed_syscalls - [syscall]
+  def install_package sandbox, name, version=nil
+    suffix = version ?  "-#{version}" : ""
+    pkg = Dir["#{PKG_BASEPATH}/#{name}#{suffix}/#{name}-#{version}*.pkg.tar.xz"].first
+    if pkg
+      tmp_pkg = File.join sandbox, "tmp.pkg.tar.xz"
+      system %(cp "#{pkg}" "#{tmp_pkg}")
+      success = chrooted_system sandbox, "pacman --noconfirm -U /tmp.pkg.tar.xz"
+      File.delete tmp_pkg
+      abort "Failed to install #{pkg}" unless success
     else
-      puts "Keeping #{syscall}"
+      abort "No package built for #{name}#{suffix}"
     end
   end
 end
 
-def test_programs definition, version
-  definition.allowed_programs.each do |program|
-    run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program, "sandbox.builder")
-    puts "Exited with #{run.exit_code} for: #{program}"
-    return false unless run.successful?
-  end
+class BuildBaseCommand
+  include Command
+  include BaseCommand
+  include BtrfsSubvolumeCommands
+  include PackageBuilder
 
-  definition.allowed_failing_programs.each do |program|
-    run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program, "sandbox.builder")
-    puts "Exited with #{run.exit_code} for: #{program}"
-    if run.stderr.starts_with?("playpen")
-      return false if (run.signal && run.signal == 31) || run.stderr.includes?("timeout triggered!")
-    elsif run.stderr.includes?("Bad system call")
-      return false
+  BASE_PACKAGES = %w(bash coreutils shadow file grep sed pacman)
+
+  def execute definition, version=nil
+    Dir.mkdir_p File.dirname(base_path)
+
+    case definition
+    when "base"
+      build_base
+    when SandboxDefinition
+      build_base
+      build definition
     end
   end
 
-  true
-end
+  def build_base
+    if File.exists? base_path
+      puts "base exists, skipping."
+      return
+    end
 
-ensure_base
+    create_subvolume base_path
+    pacstrap base_path, BASE_PACKAGES
+    File.open(File.join(base_path, "etc/locale.gen"), "a") do |io|
+      io.puts "\nen_US.UTF-8 UTF-8"
+    end
+    File.write File.join(base_path, "etc/locale.conf"), "LANG=en_US.UTF-8"
+    Dir.mkdir_p File.join(base_path, "dev/shm")
+    system "mknod -m666 #{File.join(base_path, "dev/null")} c 1 3"
+    chrooted_system base_path, "locale-gen"
+  end
 
-Dir["#{Carcin::SANDBOX_BASEPATH}/definitions/*.json"].each do |definition_path|
-  definition = SandboxDefinition.from_json File.read(definition_path)
-  base_path = File.join Carcin::SANDBOX_BASEPATH, "bases", definition.name
-  path = File.join Carcin::SANDBOX_BASEPATH, definition.name
+  def build definition
+    path = base_path_for(definition.name)
+    if File.exists? path
+      puts "base for #{definition.name} exists, skipping."
+      return
+    end
 
-  unless File.exists? base_path
-    create_snapshot BASE_SANDBOX, base_path
-    pacstrap base_path, definition.dependencies
+    create_snapshot base_path, path
+    pacstrap path, definition.dependencies
     definition.aur_dependencies.each do |name|
       build_package name
-      install_package base_path, name
-      create_user base_path, definition.name
+      install_package path, name
+      create_user path, definition.name
     end
   end
 
-  definition.versions.each do |version|
-    sandbox = File.join path, version
-    next if File.exists? sandbox
-    build_package definition.name, version
-    create_snapshot base_path, sandbox
-    install_package sandbox, definition.name, version
-    generate_wrapper sandbox, definition, version
-    generate_whitelist sandbox, definition, version
+  def pacstrap path, packages
+    system("pacstrap -cd #{path} #{packages.join(' ')}")
+  end
+
+
+  def create_user chroot, name
+    chrooted_system chroot, "useradd -m #{name}"
   end
 end
+
+class DropBaseCommand
+  include Command
+  include BaseCommand
+  include BtrfsSubvolumeCommands
+
+  def execute definition, version=nil
+    case definition
+    when "base"
+      drop base_path
+    when SandboxDefinition
+      drop base_path_for(definition.name)
+    end
+  end
+
+  def drop path
+    if File.exists? path
+      delete_subvolume path
+    else
+      puts "#{path} does not exists, skip dropping."
+    end
+  end
+end
+
+class UpdateBaseCommand
+  include Command
+  include BaseCommand
+
+  def execute definition, version=nil
+    case definition
+    when "base"
+      update base_path
+    when SandboxDefinition
+      update base_path
+      DropBaseCommand.new.execute definition
+      BuildBaseCommand.new.execute definition
+    end
+  end
+
+  def update path
+    if File.exists? path
+      chrooted_system path, "pacman -Syu --noconfirm"
+    else
+      abort "Can't update #{path}: no such directory."
+    end
+  end
+end
+
+class BuildCommand
+  include Command
+  include BtrfsSubvolumeCommands
+  include PackageBuilder
+
+  def execute definition, version
+    path = path_to(definition, version)
+
+    if File.exists? path
+      puts "#{definition.name} #{version} exists, skipping."
+      return
+    end
+
+    BuildBaseCommand.new.execute definition
+
+    ensure_path_to definition
+    build_package definition.name, version
+    create_snapshot base_path_for(definition.name), path
+    install_package path, definition.name, version
+
+    BuildWrapperCommand.new.execute(definition, version)
+    GenerateWhitelistCommand.new.execute(definition, version)
+  end
+end
+
+class DropCommand
+  include Command
+  include BtrfsSubvolumeCommands
+
+  def initialize(@confirm=true)
+  end
+
+  def execute definition, version
+    path = path_to(definition, version)
+
+    if File.exists? path
+      delete_subvolume path
+    else
+      puts "#{path} does not exists, skip dropping."
+    end
+  end
+end
+
+class RebuildCommand
+  include Command
+
+  def execute definition, version
+    DropCommand.new(false).execute definition, version
+    BuildCommand.new.execute definition, version
+  end
+end
+
+class BuildWrapperCommand
+  class SandboxWrapper
+    getter path
+    getter name
+    getter timeout
+    getter memory
+    getter whitelist
+    ecr_file "#{__DIR__}/carcin/sandbox_wrapper.ecr"
+
+    def initialize(@path, @name, @timeout, @memory, @whitelist)
+    end
+  end
+
+  include Command
+
+  def execute definition, version
+    ensure_path_to definition
+
+    wrapper = wrapper_path definition, version
+
+    file = Tempfile.open("sandbox_wrapper") do |io|
+      SandboxWrapper.new(
+        path_to(definition, version),
+        definition.name,
+        definition.timeout,
+        definition.memory,
+        whitelist_path(definition, version)
+      ).to_s(io)
+    end
+
+    unless system %(crystal build --release -o "#{wrapper}" "#{file.path}")
+      abort "Failed to build #{wrapper}"
+    end
+
+    file.delete
+
+    system %(chmod 4755 "#{wrapper}")
+  end
+end
+
+
+class GenerateWhitelistCommand
+  include Command
+
+  ifdef x86_64
+    ALL_SYSCALLS_LIST = "all_syscalls64"
+  else
+    ALL_SYSCALLS_LIST = "all_syscalls32"
+  end
+
+  def initialize(@force=false)
+  end
+
+  def execute definition, version
+    ensure_path_to definition
+
+    whitelist       = whitelist_path definition, version
+    all_syscalls    = File.read_lines File.join(Carcin::SANDBOX_BASEPATH, "definitions", ALL_SYSCALLS_LIST)
+    needed_syscalls = all_syscalls.dup
+
+    if File.exists?(whitelist) && !@force
+      puts "Whitelist #{whitelist} exists, skipping."
+      return
+    end
+
+    abort "Sandbox not build for #{definition.name} #{version}" unless File.exists? path_to(definition, version)
+    abort "Wrapper not build for #{definition.name} #{version}" unless File.exists? wrapper_path(definition, version)
+
+    all_syscalls.each_with_index do |syscall, i|
+      puts "Try without #{syscall.strip} (#{i+1}/#{all_syscalls.size})"
+      File.write whitelist, (needed_syscalls - [syscall]).join
+      if test_programs definition, version
+        needed_syscalls = needed_syscalls - [syscall]
+        puts "Removing #{syscall.strip} (#{all_syscalls.size-needed_syscalls.size} dropped)"
+      else
+        puts "Keeping #{syscall.strip} (#{needed_syscalls.size} in whitelist)"
+      end
+    end
+  end
+
+  def test_programs definition, version
+    definition.allowed_programs.each do |program|
+      run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program, "sandbox.builder")
+      puts "Exited with #{run.exit_code} for: #{program}"
+      return false unless run.successful?
+    end
+
+    definition.allowed_failing_programs.each do |program|
+      run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program, "sandbox.builder")
+      puts "Exited with #{run.exit_code} for: #{program}"
+      if run.stderr.starts_with?("playpen")
+        return false if (run.signal && run.signal == 31) || run.stderr.includes?("timeout triggered!")
+      elsif run.stderr.includes?("Bad system call")
+        return false
+      end
+    end
+
+    true
+  end
+end
+
+Cli.new(ARGV).run({
+  "build-base":         BuildBaseCommand.new,
+  "drop-base":          DropBaseCommand.new,
+  "update":             UpdateBaseCommand.new,
+  "build":              BuildCommand.new,
+  "drop":               DropCommand.new,
+  "rebuild":            RebuildCommand.new,
+  "build-wrapper":      BuildWrapperCommand.new,
+  "generate-whitelist": GenerateWhitelistCommand.new(true)
+})
