@@ -5,7 +5,7 @@ A web service that runs your code and displays the result.
 Consists of:
 
 * Frontend
-* Backend API server (written in [Crystal](http://crystal-lang.org)
+* Backend API server (written in [Crystal](http://crystal-lang.org))
 * Sandbox manager (designed for Archlinux host with a BTRFS filesystem available, written in [Crystal](http://crystal-lang.org))
 
 ## Supported languages
