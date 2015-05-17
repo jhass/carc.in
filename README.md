@@ -1,12 +1,12 @@
-# [carc.in](http://carc.in) - compile and run code in
+# [carc.in](http://carc.in) - Compile and run code in
 
 A web service that runs your code and displays the result.
 
 Consists of:
 
-* Backend API server
 * Frontend
-* Sandbox manager (designed for Archlinux host with an BTRFS filesystem available)
+* Backend API server (written in [Crystal](http://crystal-lang.org)
+* Sandbox manager (designed for Archlinux host with a BTRFS filesystem available, written in [Crystal](http://crystal-lang.org))
 
 ## Supported languages
 
