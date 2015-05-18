@@ -11,6 +11,7 @@ Consists of:
 ## Supported languages
 
 * Crystal
+* Ruby
 
 ## Contributing
 
