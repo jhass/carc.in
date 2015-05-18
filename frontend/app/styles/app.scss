@@ -118,15 +118,15 @@ code {
 
       @include direction-context(right-to-left) {
         .metadata {
-          @include fill-parent();
-          @include row(table);
+          @include span-columns(12);
+          @include fill-parent;
+          @include row;
           background-color: darken($code-bg, 10);
           font-size: 0.6em;
           padding: 0.5em;
 
           .created_at {
             @include span-columns(7);
-            @include pad(0 default 0 0);
           }
 
           .right_metadata {
