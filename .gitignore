@@ -1,6 +1,5 @@
 /.deps/
 /libs/
 /.crystal/
-sandboxes/bases
-sandboxes/pkgs
-sandboxes/crystal
+/sandboxes/*
+!/sandboxes/definitions/

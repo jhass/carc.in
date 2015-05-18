@@ -25,10 +25,22 @@ module Carcin
     abstract def versions
     abstract def short_name
 
-    class Crystal
+    module StandardRunner
       include Runner
 
-      SANDBOX_BASEPATH = File.join Carcin::SANDBOX_BASEPATH, "crystal"
+      abstract def wrapper_arguments request
+
+      def name
+        @name ||= self.class.name.downcase.split("::").last
+      end
+
+      def sandbox_basepath
+        @sandbox_basepath ||= File.join Carcin::SANDBOX_BASEPATH, name
+      end
+
+      def versions
+        @versions ||= Dir["#{sandbox_basepath}/*/"].map {|path| File.basename(path) }.sort.reverse
+      end
 
       def execute request
         return Run.failed_for request, "no version available" if versions.empty?
@@ -36,26 +48,42 @@ module Carcin
         version = request.version || versions.first
         request.version = version
         if versions.includes? version
-          status = capture executable_for(version), ["eval", request.code]
+          status = capture executable_for(version), wrapper_arguments(request)
           Run.new request, status
         else
           Run.failed_for request, "unsupported version"
         end
       end
 
+      private def executable_for version
+        File.join sandbox_basepath, "sandboxed_#{name}#{version}"
+      end
+    end
+
+    class Crystal
+      include StandardRunner
+
       def short_name
         "cr"
       end
 
-      def versions
-        @versions ||= Dir["#{SANDBOX_BASEPATH}/*/"].map {|path| File.basename(path) }.sort.reverse
-      end
-
-      private def executable_for version
-        File.join SANDBOX_BASEPATH, "sandboxed_crystal#{version}"
+      def wrapper_arguments request
+        ["eval", request.code]
       end
     end
-
     register "crystal", Crystal.new
+
+    class Ruby
+      include StandardRunner
+
+      def short_name
+        "rb"
+      end
+
+      def wrapper_arguments request
+        ["-e", request.code]
+      end
+    end
+    register "ruby", Ruby.new
   end
 end

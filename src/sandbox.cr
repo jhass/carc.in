@@ -214,7 +214,7 @@ module PackageBuilder
         File.rename name, "#{name}#{suffix}"
         Dir.chdir("#{name}#{suffix}") do
           replace_version version if version
-          unless system("makepkg -s")
+          unless system("makepkg -s --pkg #{name}")
             abort "Failed to build #{name}#{suffix}"
           end
         end
@@ -306,11 +306,11 @@ class BuildBaseCommand
     end
 
     create_snapshot base_path, path
+    create_user path, definition.name
     pacstrap path, definition.dependencies
     definition.aur_dependencies.each do |name|
       build_package name
       install_package path, name
-      create_user path, definition.name
     end
   end
 
