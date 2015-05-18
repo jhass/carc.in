@@ -3,7 +3,12 @@
   "versions": ["2.2.2"],
   "dependencies": [
     "libxml2",
-    "libyaml"
+    "libyaml",
+    "gdbm",
+    "openssl",
+    "libffi",
+    "gmp",
+    "zlib"
   ],
   "aur_dependencies": [],
   "timeout": 5,
