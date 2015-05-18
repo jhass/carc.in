@@ -14,6 +14,7 @@ export default Ember.Route.extend({
     controller.set('model', model);
     controller.set('languages', this.store.find('language'));
     controller.set('languageId', this.get('languageId'));
+    controller.notifyPropertyChange('languageId');
   },
   model: function(params) {
     if (ENV.languageNames[params.language_id] === undefined) {
