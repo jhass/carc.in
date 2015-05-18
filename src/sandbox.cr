@@ -214,7 +214,7 @@ module PackageBuilder
         File.rename name, "#{name}#{suffix}"
         Dir.chdir("#{name}#{suffix}") do
           replace_version version if version
-          unless system("makepkg -s --pkg #{name}")
+          unless system("makepkg -s --noconfirm --pkg #{name}")
             abort "Failed to build #{name}#{suffix}"
           end
         end
