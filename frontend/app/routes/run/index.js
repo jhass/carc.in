@@ -7,7 +7,7 @@ export default Ember.Route.extend({
   },
   actions: {
     new: function() {
-      this.transitionTo('run_request', ENV.defaultLanguage);
+      this.transitionTo('run_request', this.get('controller.model.language'));
     },
     edit: function() {
       this.transitionTo('run.edit', this.get('controller.model'));

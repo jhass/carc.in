@@ -8,6 +8,12 @@ module.exports = function(environment) {
     locationType: 'hash',
     apiHost: null,
     defaultLanguage: 'cr',
+    languageNames: {
+      'cr': 'Crystal',
+      'crystal': 'Crystal',
+      'rb': 'Ruby',
+      'ruby': 'Ruby'
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

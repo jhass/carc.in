@@ -1,4 +1,4 @@
-import { LanguageNames } from 'carcin/app';
+import ENV from 'carcin/config/environment';
 
 Array.prototype.flatMap = function(cb) {
     return Array.prototype.concat.apply([], this.map(cb));
@@ -16,7 +16,7 @@ export default Ember.Component.extend({
             return {
               "id": language.get('id'),
               "name": language.get('name'),
-              "prettyName": LanguageNames[language.get('name')],
+              "prettyName": ENV.languageNames[language.get('name')],
               "version": version
             };
           });

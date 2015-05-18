@@ -16,9 +16,3 @@ App = Ember.Application.extend({
 loadInitializers(App, config.modulePrefix);
 
 export default App;
-
-export var LanguageNames = {
-  'cr': 'Crystal',
-  'crystal': 'Crystal'
-};
-

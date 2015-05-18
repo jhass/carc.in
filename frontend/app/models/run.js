@@ -1,4 +1,4 @@
-import { LanguageNames } from 'carcin/app';
+import ENV from 'carcin/config/environment';
 
 var PlaypenMessages = {
   'timeout triggered!': 'Execution timed out.',
@@ -34,6 +34,6 @@ export default DS.Model.extend({
   }.property('stderr'),
 
   languageName: function() {
-    return LanguageNames[this.get('language')];
+    return ENV.languageNames[this.get('language')];
   }
 });

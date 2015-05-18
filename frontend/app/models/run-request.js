@@ -1,4 +1,4 @@
-import { LanguageNames } from 'carcin/app';
+import ENV from 'carcin/config/environment';
 
 export default DS.Model.extend({
   url: '/run_requests',
@@ -8,6 +8,6 @@ export default DS.Model.extend({
   run:      DS.belongsTo('run'),
 
   languageName: function() {
-    return LanguageNames[this.get('language')];
+    return ENV.languageNames[this.get('language')];
   }
 });
