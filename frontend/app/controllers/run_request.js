@@ -13,9 +13,9 @@ export default Ember.Controller.extend({
     },
     submit: function() {
       var _this = this;
-      this.transitionTo('loading').then(function() {
+      this.transitionToRoute('loading').then(function() {
         _this.get('model').save().then(function(request) {
-          _this.transitionTo('run', request.get('run'));
+          _this.replaceRoute('run', request.get('run'));
         });
       });
     }
