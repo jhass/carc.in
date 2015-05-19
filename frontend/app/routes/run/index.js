@@ -1,5 +1,3 @@
-import ENV from 'carcin/config/environment';
-
 export default Ember.Route.extend({
   shortcuts: {
     'n': 'new',

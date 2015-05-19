@@ -42,7 +42,12 @@ export default Ember.Controller.extend({
   },
   updateUrl: function() {
     if (this.get('controllers.application.currentPath') == 'run_request') {
-      this.get('target').location.replaceURL('/' + this.get('languageId'));
+      var location = this.get('target').location,
+          targetURL = '/' + this.get('languageId');
+
+      if (location.getURL() !== targetURL) {
+        this.replaceRoute('run_request', this.get('languageId'));
+      }
     }
   },
   getLanguageIdFor: function(nameOrId) {
