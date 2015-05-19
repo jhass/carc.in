@@ -13,7 +13,7 @@ export default Ember.Route.extend({
   },
   afterModel: function(resolvedModel) {
     var title = "Run #"+resolvedModel.get('id');
-    document.title = title + ' | Compile & run code in ' + resolvedModel.languageName();
+    document.title = title + ' | Compile & run code in ' + resolvedModel.get('languageName');
     this.controllerFor('application').set('title', title);
   }
 });

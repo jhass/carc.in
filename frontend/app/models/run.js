@@ -14,7 +14,7 @@ export default DS.Model.extend({
   exit_code:  DS.attr('number'),
   created_at: DS.attr('date'),
 
-  pretty_stderr: function() {
+  prettyStderr: function() {
     var foo = this.get('stderr').split("\n").map(function(line) {
       if (line.substr(0, 8) !== 'playpen:') {
         return line;
@@ -35,5 +35,5 @@ export default DS.Model.extend({
 
   languageName: function() {
     return ENV.languageNames[this.get('language')];
-  }
+  }.property('language')
 });
