@@ -4,10 +4,18 @@ export default Ember.Route.extend({
     'e': 'edit'
   },
   actions: {
-    new: function() {
+    new: function(event) {
+      if (event) {
+        event.preventDefault();
+      }
+
       this.transitionTo('run_request', this.get('controller.model.language'));
     },
-    edit: function() {
+    edit: function(event) {
+      if (event) {
+        event.preventDefault();
+      }
+
       this.transitionTo('run.edit', this.get('controller.model'));
     }
   },

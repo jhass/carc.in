@@ -1,6 +1,7 @@
 export default Ember.Route.extend({
   controllerName: 'run_request',
   templateName: 'run_request',
+  viewName: 'run_request',
   shortcuts: {
     'ctrl+enter': 'submit',
     'esc': 'showRun'
