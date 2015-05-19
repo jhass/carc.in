@@ -17,7 +17,6 @@
 </div>
 
 <div class="output">
-
   {{#if model.prettyStderr}}
     <div class="stderr">
       <h3>Error output</h3>
@@ -25,12 +24,14 @@
     </div>
   {{/if}}
 
-  <div class="stdout">
-    <h3>Output</h3>
-    {{#if model.stdout}}
-      {{source-code code=model.stdout language='nohighlight'}}
-    {{else}}
-      There was no output.
-    {{/if}}
-  </div>
+ {{#if displayOutput}}
+    <div class="stdout">
+      <h3>Output</h3>
+      {{#if model.stdout}}
+        {{source-code code=model.stdout language='nohighlight'}}
+      {{else}}
+        There was no output.
+      {{/if}}
+    </div>
+  {{/if}}
 </div>
