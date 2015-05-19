@@ -4,5 +4,5 @@
 
 <div id="controls">
   {{language-select languages=languages languageId=languageId language=model.language version=model.version action="updateRequest"}}
-  <button {{action 'submit'}}>Compile &amp; run code</button>
+  <button {{action 'submit'}} {{bindAttr disabled=isInvalid}}>Compile &amp; run code</button>
 </div>

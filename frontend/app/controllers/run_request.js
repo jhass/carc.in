@@ -13,6 +13,11 @@ export default Ember.Controller.extend({
     },
     submit: function() {
       var _this = this;
+
+      if (this.get('isInvalid')) {
+        return;
+      }
+
       this.transitionToRoute('loading').then(function() {
         _this.get('model').save().then(function(request) {
           _this.replaceRoute('run', request.get('run'));
@@ -20,6 +25,9 @@ export default Ember.Controller.extend({
       });
     }
   },
+  isInvalid: function() {
+    return Ember.isBlank(this.get('model.code'));
+  }.property('model.code'),
   editorLanguage: function() {
     return 'ruby';
   }.property('model.language'),
