@@ -24,8 +24,11 @@ export default Ember.Controller.extend({
       }
 
       this.transitionToRoute('loading').then(function() {
-        _this.get('model').save().then(function(request) {
-          _this.replaceRoute('run', request.get('run'));
+        _this.set('model.id', null);
+        _this.get('model').save().then(function(response) {
+          _this.replaceRoute('run', response.get('run'));
+        }, function(response) {
+          _this.replaceRoute('run_request', _this.get('model')); // TODO: display error
         });
       });
     }
@@ -51,7 +54,8 @@ export default Ember.Controller.extend({
           targetURL = '/' + this.get('languageId');
 
       if (location.getURL() !== targetURL) {
-        this.replaceRoute('run_request', this.get('languageId'));
+        this.set('model.id', this.get('languageId'));
+        this.replaceRoute('run_request', this.get('model'));
       }
     }
   },
