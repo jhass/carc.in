@@ -13,6 +13,7 @@ export default Ember.Controller.extend({
   actions: {
     updateRequest: function(language, version) {
       this.set('languageId', this.getLanguageIdFor(language));
+      this.updateUrl();
       this.set('model.language', language);
       this.set('model.version', version);
     },
@@ -40,7 +41,6 @@ export default Ember.Controller.extend({
     return LanguageMap[this.get('model.language')] || this.get('model.language');
   }.property('model.language'),
   languageIdChanged: function() {
-    Ember.run.once(this, 'updateUrl');
     Ember.run.once(this, 'updateTitle');
   }.observes('languageId'),
   updateTitle: function() {
@@ -54,8 +54,7 @@ export default Ember.Controller.extend({
           targetURL = '/' + this.get('languageId');
 
       if (location.getURL() !== targetURL) {
-        this.set('model.id', this.get('languageId'));
-        this.replaceRoute('run_request', this.get('model'));
+        location.replaceURL(targetURL);
       }
     }
   },

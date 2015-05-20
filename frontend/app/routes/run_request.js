@@ -25,4 +25,7 @@ export default Ember.Route.extend({
     this.set('languageId', params.language_id);
     return this.store.createRecord('run-request');
   },
+  didTransition: function() {
+    this.get('controller').updateUrl();
+  }
 });
