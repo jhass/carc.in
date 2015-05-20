@@ -12,7 +12,9 @@ module.exports = function(environment) {
       'cr': 'Crystal',
       'crystal': 'Crystal',
       'rb': 'Ruby',
-      'ruby': 'Ruby'
+      'ruby': 'Ruby',
+      'gcc': 'C (GCC)',
+      'c': 'C (GCC)'
     },
     EmberENV: {
       FEATURES: {

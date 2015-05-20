@@ -4,7 +4,7 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 var app = new EmberApp({
   codemirror: {
-    modes: ['ruby'],
+    modes: ['ruby', 'clike'],
     themes: ['neat']
   }
 });

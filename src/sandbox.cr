@@ -30,6 +30,8 @@ class SandboxDefinition
   json_mapping({
     name:                     String,
     versions:                 Array(String),
+    split_packages:           {type: Array(String), nilable: true},
+    binary:                   {type: String, nilable: true},
     dependencies:             Array(String),
     aur_dependencies:         Array(String),
     timeout:                  Int32,
@@ -203,8 +205,9 @@ end
 module PackageBuilder
   PKG_BASEPATH = File.join Carcin::SANDBOX_BASEPATH, "pkgs"
 
-  def build_package name, version=nil
+  def build_package name, version=nil, extra_names=nil
     suffix = version ?  "-#{version}" : ""
+    extra_names ||= [] of String
     uid = File.stat(Carcin::SANDBOX_BASEPATH).uid
     as_user(uid) do
       Dir.mkdir_p PKG_BASEPATH
@@ -214,7 +217,8 @@ module PackageBuilder
         File.rename name, "#{name}#{suffix}"
         Dir.chdir("#{name}#{suffix}") do
           replace_version version if version
-          unless system("makepkg -s --noconfirm --pkg #{name}")
+          packages = [name].concat extra_names
+          unless system("makepkg -s --noconfirm --pkg #{packages.join(",")}")
             abort "Failed to build #{name}#{suffix}"
           end
         end
@@ -246,17 +250,40 @@ module PackageBuilder
     Process.waitpid pid
   end
 
-  def install_package sandbox, name, version=nil
+  def install_packages sandbox, name, version=nil, extra_names=nil
+    packages.each do |package|
+      install_package sandbox, package, version
+    end
+  end
+
+  def install_package sandbox, name, version=nil, extra_names=nil
     suffix = version ?  "-#{version}" : ""
-    pkg = Dir["#{PKG_BASEPATH}/#{name}#{suffix}/#{name}-#{version}*.pkg.tar.xz"].first
-    if pkg
-      tmp_pkg = File.join sandbox, "tmp.pkg.tar.xz"
-      system %(cp "#{pkg}" "#{tmp_pkg}")
-      success = chrooted_system sandbox, "pacman --noconfirm -U /tmp.pkg.tar.xz"
-      File.delete tmp_pkg
-      abort "Failed to install #{pkg}" unless success
-    else
+    extra_names ||= [] of String
+    package_names = [name].concat extra_names
+    pattern = File.join(PKG_BASEPATH, "#{name}#{suffix}", "{#{package_names.join(",")}}-#{version}*.pkg.tar.xz")
+    packages = Dir[pattern].map {|path|
+      name = File.basename(path)
+      [name, path, File.join(sandbox, name)]
+    }
+
+    if packages.empty?
       abort "No package built for #{name}#{suffix}"
+    end
+
+    packages.each do |package|
+      name, path, target = package
+      system %(cp "#{path}" "#{target}")
+    end
+
+    success = chrooted_system sandbox, "pacman --noconfirm -U #{packages.map {|package| "/#{package.first}" }.join(" ")}"
+
+    packages.each do |package|
+      name, path, target = package
+      File.delete target
+    end
+
+    unless success
+      abort "Failed to install #{package_names.join(", ")}"
     end
   end
 end
@@ -387,9 +414,9 @@ class BuildCommand
     BuildBaseCommand.new.execute definition
 
     ensure_path_to definition
-    build_package definition.name, version
+    build_package definition.name, version, definition.split_packages
     create_snapshot base_path_for(definition.name), path
-    install_package path, definition.name, version
+    install_package path, definition.name, version, definition.split_packages
 
     BuildWrapperCommand.new.execute(definition, version)
     GenerateWhitelistCommand.new.execute(definition, version)
@@ -432,7 +459,11 @@ class BuildWrapperCommand
     getter whitelist
     ecr_file "#{__DIR__}/carcin/sandbox_wrapper.ecr"
 
-    def initialize(@path, @name, @timeout, @memory, @whitelist)
+    def initialize(@path, @name, @binary, @timeout, @memory, @whitelist)
+    end
+
+    def binary
+      @binary || "/usr/bin/#{@name}"
     end
   end
 
@@ -447,6 +478,7 @@ class BuildWrapperCommand
       SandboxWrapper.new(
         path_to(definition, version),
         definition.name,
+        definition.binary,
         definition.timeout,
         definition.memory,
         whitelist_path(definition, version)

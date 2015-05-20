@@ -1,5 +1,10 @@
 import ENV from 'carcin/config/environment';
 
+var LanguageMap = {
+  "crystal": "ruby",
+  "gcc": "clike"
+};
+
 export default Ember.Controller.extend({
   needs: 'application',
   shortcuts: {
@@ -29,7 +34,7 @@ export default Ember.Controller.extend({
     return Ember.isBlank(this.get('model.code'));
   }.property('model.code'),
   editorLanguage: function() {
-    return 'ruby';
+    return LanguageMap[this.get('model.language')] || this.get('model.language');
   }.property('model.language'),
   languageIdChanged: function() {
     Ember.run.once(this, 'updateUrl');
@@ -41,7 +46,7 @@ export default Ember.Controller.extend({
     document.title = title;
   },
   updateUrl: function() {
-    if (this.get('controllers.application.currentPath') == 'run_request') {
+    if (this.get('controllers.application.currentPath') === 'run_request') {
       var location = this.get('target').location,
           targetURL = '/' + this.get('languageId');
 

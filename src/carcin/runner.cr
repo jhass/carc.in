@@ -48,14 +48,18 @@ module Carcin
         version = request.version || versions.first
         request.version = version
         if versions.includes? version
-          status = capture executable_for(version), wrapper_arguments(request)
+          status = run request, version
           Run.new request, status
         else
           Run.failed_for request, "unsupported version"
         end
       end
 
-      private def executable_for version
+      protected def run request, version
+        capture executable_for(version), wrapper_arguments(request)
+      end
+
+      protected def executable_for version
         File.join sandbox_basepath, "sandboxed_#{name}#{version}"
       end
     end
@@ -85,5 +89,21 @@ module Carcin
       end
     end
     register "ruby", Ruby.new
+
+    class Gcc
+      include StandardRunner
+
+      def short_name
+        "c"
+      end
+
+      def run request, version
+        Process.run executable_for(version), nil, output: true, stderr: true, input: request.code
+      end
+
+      def wrapper_arguments request
+      end
+    end
+    register "gcc", Gcc.new
   end
 end

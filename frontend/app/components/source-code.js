@@ -1,5 +1,6 @@
 var LanguageMap = {
-  "crystal": "ruby"
+  "crystal": "ruby",
+  "gcc": "c++"
 };
 
 export default Ember.Component.extend({

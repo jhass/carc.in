@@ -12,6 +12,7 @@ Consists of:
 
 * Crystal
 * Ruby
+* C (GCC)
 
 ## Contributing
 
