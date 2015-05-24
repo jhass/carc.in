@@ -14,6 +14,6 @@ export default Ember.Component.extend({
     var code = this.$('pre > code')[0];
     code.innerHTML = window.ansi_up.ansi_to_html(code.innerHTML, {use_classes: true});
     window.hljs.highlightBlock(this.$('pre > code')[0]);
-    // window.hljs.lineNumbersBlock(this.$('pre > code')[0]);
+    window.hljs.lineNumbersBlock(this.$('pre > code')[0]);
   }
 });
