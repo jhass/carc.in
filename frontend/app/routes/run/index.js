@@ -1,7 +1,9 @@
 export default Ember.Route.extend({
   shortcuts: {
     'n': 'new',
-    'e': 'edit'
+    'e': 'edit',
+    'ctrl+n': 'newInNewTab',
+    'ctrl+e': 'editInNewTab'
   },
   actions: {
     new: function(event) {
@@ -17,6 +19,20 @@ export default Ember.Route.extend({
       }
 
       this.transitionTo('run.edit', this.get('controller.model'));
+    },
+    newInNewTab: function(event) {
+      if (event) {
+        event.preventDefault();
+      }
+
+      window.open(this.router.generate('run_request', this.get('controller.model.language')));
+    },
+    editInNewTab: function(event) {
+      if (event) {
+        event.preventDefault();
+      }
+
+      window.open(this.router.generate('run.edit', this.get('controller.model')));
     }
   },
   afterModel: function(resolvedModel) {

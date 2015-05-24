@@ -28,7 +28,7 @@ export default Ember.Controller.extend({
         _this.set('model.id', null);
         _this.get('model').save().then(function(response) {
           _this.replaceRoute('run', response.get('run'));
-        }, function(response) {
+        }, function() {
           _this.replaceRoute('run_request', _this.get('model')); // TODO: display error
         });
       });
