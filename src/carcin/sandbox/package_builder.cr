@@ -1,3 +1,5 @@
+require "../core_ext/process"
+
 module Carcin::Sandbox::PackageBuilder
   PKG_BASEPATH = File.join Carcin::SANDBOX_BASEPATH, "pkgs"
 
@@ -30,15 +32,9 @@ module Carcin::Sandbox::PackageBuilder
     system "updpkgsums"
   end
 
-  def switch_user uid
-    unless LibC.setuid(uid.to_i) == 0
-      raise Errno.new "Can't switch to user #{uid}"
-    end
-  end
-
   def as_user uid
     pid = Process.fork do
-      switch_user uid
+      Process.uid = uid
       yield
       exit 0
     end

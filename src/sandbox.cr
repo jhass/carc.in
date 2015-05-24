@@ -1,12 +1,8 @@
 require "./carcin"
+require "./carcin/core_ext/process"
 require "./carcin/sandbox/*"
 
-lib LibC
-  fun getuid() : Int32
-  fun setuid(uid : Int32) : Int32
-end
-
-if LibC.getuid != 0
+unless Process.uid == 0
   abort "This command must be run with root permissions."
 end
 
