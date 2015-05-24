@@ -1,28 +1,10 @@
 require "json"
 require "Moonshine/moonshine"
 require "./carcin"
+require "./carcin/core_ext/enumerable"
+require "./carcin/core_ext/json"
 
 include Moonshine::Shortcuts
-
-def Object.from_json? json, root=nil
-  if root
-    object = JSON.parse(json) as Hash(String, JSON::Type)
-    object = object[root]?
-    json = object.to_json if object
-  end
-  from_json json
-rescue e : JSON::ParseException
-end
-
-module Enumerable
-  def find_value(fallback=nil)
-    each do |item|
-      value = yield item
-      return value if value
-    end
-    fallback
-  end
-end
 
 def json object
   ok(object.to_pretty_json).tap do |response|
@@ -63,6 +45,25 @@ app.error_handler 404 do |_request|
   json_error 404, "not found"
 end
 
+app.request_middleware do |request|
+  if request.method == "OPTIONS"
+    Moonshine::MiddlewareResponse.new(
+      Moonshine::Http::Response.new(
+        204,
+        "",
+        HTTP::Headers {
+          "Access-Control-Allow-Origin" => "*",
+          "Access-Control-Allow-Methods" => "GET, POST, PATCH, PUT, DELETE",
+          "Access-Control-Allow-Headers" => "Content-Type"
+        }
+      ),
+      pass_through: false
+    )
+  else
+    Moonshine::MiddlewareResponse.new
+  end
+end
+
 app.get "/" do |request|
   json({
     "languages_url": "#{Carcin::BASE_URL}/languages",
@@ -95,24 +96,6 @@ app.get "/runs/:id" do |request|
   end
 end
 
-app.request_middleware do |request|
-  if request.method == "OPTIONS"
-    Moonshine::MiddlewareResponse.new(
-      Moonshine::Http::Response.new(
-        204,
-        "",
-        HTTP::Headers {
-          "Access-Control-Allow-Origin" => "*",
-          "Access-Control-Allow-Methods" => "GET, POST, PATCH, PUT, DELETE",
-          "Access-Control-Allow-Headers" => "Content-Type"
-        }
-      ),
-      pass_through: false
-    )
-  else
-    Moonshine::MiddlewareResponse.new
-  end
-end
 
 app.post "/run_requests" do |request|
   begin
