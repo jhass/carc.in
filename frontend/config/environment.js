@@ -16,6 +16,10 @@ module.exports = function(environment) {
       'gcc': 'C (GCC)',
       'c': 'C (GCC)'
     },
+    piwik: {
+      sid: 11,
+      url: 'http://stats.mrzyx.de'
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

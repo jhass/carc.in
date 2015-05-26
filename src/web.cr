@@ -1,4 +1,3 @@
-require "json"
 require "Moonshine/moonshine"
 require "./carcin"
 require "./carcin/core_ext/enumerable"
