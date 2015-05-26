@@ -18,7 +18,7 @@ class Carcin::Sandbox::Cli
   }
 
   def initialize arguments
-    help if (arguments & %w(help -h --help)).any? || arguments.size <= 1
+    help if (arguments & %w(help -h --help)).any? || arguments.empty?
 
     @command  = arguments[0]
     @language = arguments[1]? || ARGUMENT_DEFAULTS[:language].fetch(@command) { help "No target given" }
