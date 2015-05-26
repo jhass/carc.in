@@ -8,7 +8,6 @@ class Carcin::Sandbox::Cli
     version: {
       "build-base":         nil,
       "drop-base":          nil,
-      "update":             nil,
       "update":             "all",
       "build":              "all",
       "drop":               "all",
@@ -22,16 +21,17 @@ class Carcin::Sandbox::Cli
     help if (arguments & %w(help -h --help)).any? || arguments.size <= 1
 
     @command  = arguments[0]
-    @language = arguments[1]? || ARGUMENT_DEFAULTS[:language].fetch(@command) { help }
-    @version  = arguments[2]? || ARGUMENT_DEFAULTS[:version].fetch(@command) { help }
+    @language = arguments[1]? || ARGUMENT_DEFAULTS[:language].fetch(@command) { help "No target given" }
+    @version  = arguments[2]? || ARGUMENT_DEFAULTS[:version].fetch(@command) { help "No version given" }
   end
 
   def run commands
-    command = commands.fetch(@command) { help }
+    command = commands.fetch(@command) { help "Command not found" }
     command.run(@language, @version)
   end
 
-  def help
+  def help reason=nil
+    puts "#{reason}\n\n" if reason
     puts "Build and manage sandboxes"
     puts
     puts "  help, -h, --help                                         Display this."
