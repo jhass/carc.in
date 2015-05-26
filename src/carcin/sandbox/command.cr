@@ -11,25 +11,25 @@ module Carcin::Sandbox
         return
       end
 
-      if version == "all"
-        versions_for(language).each do |version|
-          execute definition_for(language), version
-        end
-
-        return
-      end
-
-      unless language == "base" || languages.includes? language
-        abort "No definition for #{language}"
-      end
-
-      unless version.nil? || versions_for(language).includes? version
-        abort "No definition for #{language} #{version}"
-      end
-
       if language == "base"
         execute_base
       else
+        if version == "all"
+          versions_for(language).each do |version|
+            execute definition_for(language), version
+          end
+
+          return
+        end
+
+        unless languages.includes? language
+          abort "No definition for #{language}"
+        end
+
+        unless version.nil? || versions_for(language).includes? version
+          abort "No definition for #{language} #{version}"
+        end
+
         execute definition_for(language), version
       end
     end
