@@ -20,6 +20,9 @@ module.exports = function(environment) {
       sid: 11,
       url: 'http://stats.mrzyx.de'
     },
+    domainLanguageWhitelist: {
+      "play.crystal-lang.org": ["crystal"]
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
