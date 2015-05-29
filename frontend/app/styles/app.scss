@@ -44,6 +44,8 @@ code {
 
       .CodeMirror {
         height: 70vh;
+        font-family: monospace;
+        font-size: 1.1em;
 
         .CodeMirror-gutter {
           background-color: white;
