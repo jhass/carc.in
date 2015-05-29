@@ -3,7 +3,7 @@ require "./carcin"
 require "./carcin/core_ext/enumerable"
 require "./carcin/core_ext/json"
 
-include Moonshine::Shortcuts
+include Moonshine::Utils::Shortcuts
 
 def json object
   ok(object.to_pretty_json).tap do |response|
@@ -38,7 +38,7 @@ def client_ip headers
   }.try &.split(',').first
 end
 
-app = Moonshine::App.new
+app = Moonshine::Base::App.new
 
 app.error_handler 404 do |_request|
   json_error 404, "not found"
@@ -46,7 +46,7 @@ end
 
 app.request_middleware do |request|
   if request.method == "OPTIONS"
-    Moonshine::MiddlewareResponse.new(
+    Moonshine::Http::MiddlewareResponse.new(
       Moonshine::Http::Response.new(
         204,
         "",
@@ -59,7 +59,7 @@ app.request_middleware do |request|
       pass_through: false
     )
   else
-    Moonshine::MiddlewareResponse.new
+    Moonshine::Http::MiddlewareResponse.new
   end
 end
 

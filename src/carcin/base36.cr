@@ -7,7 +7,7 @@ module Carcin
     end
 
     def decode base36
-      LibC.strtoull(base36.upcase, nil, 36)
+      base36.upcase.to_i64(36)
     end
   end
 end

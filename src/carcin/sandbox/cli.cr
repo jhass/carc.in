@@ -37,7 +37,7 @@ class Carcin::Sandbox::Cli
     puts "  help, -h, --help                                         Display this."
     puts "  build-base         <language>|[base]                     Build base chroot."
     puts "  drop-base          <language>|[base]                     Drop base chroot."
-    puts "  update             <language>|all|[base] <version>|[all] Update base chroot and rebuild (all) sandbox bases."
+    puts "  update             <language>|all|[base]                 Update base chroot and rebuild (all) sandbox bases."
     puts "  build              <language>|all        <version>|[all] Build (all) sandboxes."
     puts "  drop               <language>|all        <version>|[all] Drop (all) sandboxes."
     puts "  rebuild            <language>|all        <version>|[all] Rebuild (all) sandboxes."
