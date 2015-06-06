@@ -13,7 +13,7 @@ export default Ember.Component.extend({
       this.get('languages').then(function(languages) {
         _this.set('versions', Array.prototype.concat.apply([], languages.filter(function(language) {
           if (window.location.host in ENV.domainLanguageWhitelist) {
-            return ENV.domainLanguageWhitelist[window.location.host].indexOf(language.get('name')) != -1;
+            return ENV.domainLanguageWhitelist[window.location.host].indexOf(language.get('name')) !== -1;
           } else {
             return true;
           }
