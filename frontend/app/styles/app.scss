@@ -116,6 +116,11 @@ code {
 
       pre {
         margin-bottom: 0;
+        background-color: $code-bg;
+
+        code:nth-child(2) {
+          border-left: 1px solid darken($code-bg, 15%);
+        }
       }
 
       @include direction-context(right-to-left) {
@@ -123,7 +128,7 @@ code {
           @include span-columns(12);
           @include fill-parent;
           @include row;
-          background-color: darken($code-bg, 10);
+          background-color: darken($code-bg, 8%);
           font-size: 0.6em;
           padding: 0.5em;
 
