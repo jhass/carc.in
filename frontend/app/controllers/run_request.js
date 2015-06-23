@@ -18,19 +18,18 @@ export default Ember.Controller.extend({
       this.set('model.version', version);
     },
     submit: function() {
-      var _this = this;
+      var _this = this, route = this.get("target");
 
       if (this.get('isInvalid')) {
         return;
       }
 
-      this.transitionToRoute('loading').then(function() {
-        _this.set('model.id', null);
-        _this.get('model').save().then(function(response) {
-          _this.replaceRoute('run', response.get('run'));
-        }, function() {
-          _this.replaceRoute('run_request', _this.get('model')); // TODO: display error
-        });
+      route.intermediateTransitionTo("loading");
+      this.set('model.id', null);
+      this.get('model').save().then(function(response) {
+        route.transitionTo('run', response.get('run'));
+      }, function() {
+        route.intermediateTransitionTo('run_request', _this.get('model')); // TODO: display error
       });
     }
   },
