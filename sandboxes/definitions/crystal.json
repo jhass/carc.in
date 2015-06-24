@@ -3,7 +3,6 @@
   "versions": ["0.7.4", "0.7.3", "0.7.2", "0.7.1", "0.6.1"],
   "dependencies": [
     "binutils",
-    "gc",
     "gcc",
     "libatomic_ops",
     "libunwind",
@@ -13,7 +12,7 @@
     "pcre",
     "libevent"
   ],
-  "aur_dependencies": ["libpcl"],
+  "aur_dependencies": ["libpcl", "gc-static"],
   "timeout": 5,
   "memory":  256,
   "allowed_programs": [
