@@ -20,7 +20,7 @@
     "`ls -al`",
     "exit",
     "r, w = IO.pipe;  Process.run(\"/bin/cat\", output: w, input: \"hi\"); p(r.read(1))",
-    "lib LibC; fun popen(command : UInt8*, type : UInt8*); LibC.popen(\"ls\", \"r\")",
+    "lib LibC; fun popen(command : UInt8*, type : UInt8*); end; LibC.popen(\"ls\", \"r\")",
     "require \"compiler/crystal/**\"; Crystal::Parser.parse(\"foo { |x| x.bar }\")",
     "sleep 0.01",
     "SecureRandom.hex(64)"
