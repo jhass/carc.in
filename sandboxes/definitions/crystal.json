@@ -13,7 +13,7 @@
     "libevent"
   ],
   "aur_dependencies": ["libpcl", "gc-static"],
-  "timeout": 5,
+  "timeout": 10,
   "memory":  256,
   "allowed_programs": [
     "puts \"hi\"",
