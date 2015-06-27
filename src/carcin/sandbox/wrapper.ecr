@@ -1,7 +1,7 @@
 args = [
   "<%= path %>",
   "-p",
-  "-d", "/dev/null:rw",
+  "-d", "/dev/null:rw,/dev/random:r,/dev/urandom:r"
   "-u", "<%= name %>",
   <% if memory %>
     "-m", "<%= memory %>",

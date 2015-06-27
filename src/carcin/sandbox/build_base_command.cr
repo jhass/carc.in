@@ -37,7 +37,8 @@ class Carcin::Sandbox::BuildBaseCommand
     File.write File.join(base_path, "etc/locale.conf"), "LANG=en_US.UTF-8"
     Dir.mkdir_p File.join(base_path, "dev/shm")
     system "mknod -m666 #{File.join(base_path, "dev/null")} c 1 3"
-    system "mknod -m644 #{File.join(base_path, "dev/urandom")} c 1 9"
+    system "mknod -m444 #{File.join(base_path, "dev/random")} c 1 8"
+    system "mknod -m444 #{File.join(base_path, "dev/urandom")} c 1 9"
     chrooted_system base_path, "locale-gen"
   end
 
