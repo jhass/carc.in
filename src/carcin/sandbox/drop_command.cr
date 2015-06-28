@@ -16,5 +16,11 @@ class Carcin::Sandbox::DropCommand
     else
       puts "#{path} does not exists, skip dropping."
     end
+
+    path = wrapper_path(definition, version)
+    File.delete(path) if File.exists? path
+
+    path = whitelist_path(definition, version)
+    File.delete(path) if File.exists? path
   end
 end
