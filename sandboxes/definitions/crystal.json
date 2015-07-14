@@ -24,7 +24,8 @@
     "require \"compiler/crystal/**\"; Crystal::Parser.parse(\"foo { |x| x.bar }\")",
     "sleep 0.01",
     "File.open(\"/dev/random\") {|io| io.read(1) }",
-    "require \"secure_random\"; SecureRandom.hex(64)"
+    "require \"secure_random\"; SecureRandom.hex(64)",
+    "require \"benchmark\"; Benchmark.bm do |b|; b.report(\"Here\") { puts \"Yes\" }; end"
   ],
   "allowed_failing_programs": [
     "putss \"hi\"",
