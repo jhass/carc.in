@@ -1,4 +1,4 @@
 deps do
-  github "dhruvrajvanshi/Moonshine"
+  github "ysbaddaden/artanis"
   github "will/crystal-pg"
 end

@@ -1,125 +1,117 @@
-require "Moonshine/moonshine"
+require "http/server"
+
+require "artanis"
+
 require "./carcin"
 require "./carcin/core_ext/enumerable"
 require "./carcin/core_ext/json"
 
-include Moonshine::Utils::Shortcuts
 
-def json object
-  ok(object.to_pretty_json).tap do |response|
-    response.headers["Content-Type"] = "application/json; charset=utf-8"
-    response.headers["Access-Control-Allow-Origin"] = "*"
+class App < Artanis::Application
+  options "*" do
+    status 204
+    headers({
+      "Access-Control-Allow-Origin":  "*",
+      "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE",
+      "Access-Control-Allow-Headers": "Content-Type"
+    })
+    ""
   end
-end
 
-def json_error status, message
-  Moonshine::Http::Response.new(
-    status,
-    %({"error": {"message": "#{message}"}}),
-    HTTP::Headers {
-      "Content-Type" => "application/json; charset=utf-8",
-      "Access-Control-Allow-Origin" => "*"
-    }
-  )
-end
-
-def unprocessable message
-  json_error 422, message
-end
-
-def not_found
-  json_error 404, "not found"
-end
-
-def client_ip headers
-  {"CLIENT_IP", "X_FORWARDED_FOR", "X_FORWARDED", "X_CLUSTER_CLIENT_IP", "FORWARDED"}.find_value {|header|
-    dashed_header = header.tr("_", "-")
-    headers[header]? || headers[dashed_header]? || headers["HTTP_#{header}"]? || headers["Http-#{dashed_header}"]?
-  }.try &.split(',').first
-end
-
-app = Moonshine::Base::App.new
-
-app.error_handler 404 do |_request|
-  json_error 404, "not found"
-end
-
-app.request_middleware do |request|
-  if request.method == "OPTIONS"
-    Moonshine::Http::MiddlewareResponse.new(
-      Moonshine::Http::Response.new(
-        204,
-        "",
-        HTTP::Headers {
-          "Access-Control-Allow-Origin" => "*",
-          "Access-Control-Allow-Methods" => "GET, POST, PATCH, PUT, DELETE",
-          "Access-Control-Allow-Headers" => "Content-Type"
-        }
-      ),
-      pass_through: false
-    )
-  else
-    Moonshine::Http::MiddlewareResponse.new
+  get "/" do
+    json({
+      "languages_url": "#{Carcin::BASE_URL}/languages",
+      "run_url": "#{Carcin::BASE_URL}/runs/{id}",
+      "run_request_url": "#{Carcin::BASE_URL}/run_requests"
+    })
   end
-end
 
-app.get "/" do |request|
-  json({
-    "languages_url": "#{Carcin::BASE_URL}/languages",
-    "run_url": "#{Carcin::BASE_URL}/runs/{id}",
-    "run_request_url": "#{Carcin::BASE_URL}/run_requests"
-  })
-end
-
-app.get "/languages" do |request|
-  json({"languages": Carcin::Runner::RUNNERS.map {|name, runner|
-    Carcin::LanguagePresenter.new(name, runner)
-  }.reject(&.versions.empty?)})
-end
-
-app.get "/runs/:id" do |request|
-  begin
-    id  = Carcin::Base36.decode request.params["id"]
-    run = Carcin::Run.find_by_id(id) if id
-
-    if run
-      json({"run": Carcin::RunPresenter.new(run)})
-    else
-      not_found
-    end
-  rescue e
-    puts e.class
-    puts e.message
-    puts e.backtrace.join("\n")
-    json_error 500, "internal server error"
+  get "/languages" do
+    json({"languages": Carcin::Runner::RUNNERS.map {|name, runner|
+      Carcin::LanguagePresenter.new(name, runner)
+    }.reject(&.versions.empty?)})
   end
-end
 
+  get "/runs/:id" do
+    with_error_handling do
+      id  = Carcin::Base36.decode params["id"]
+      run = Carcin::Run.find_by_id(id) if id
 
-app.post "/run_requests" do |request|
-  begin
-    if request.headers["Content-Type"].starts_with? "application/json"
-      run_request = Carcin::RunRequest.from_json? request.body, "run_request"
-      if run_request
-        run_request.author_ip = client_ip request.headers
-        run = Carcin::Runner.execute run_request
-        if run.save
-          json({"run_request": {"run": Carcin::RunPresenter.new(run)}})
-        else
-          unprocessable run.error
-        end
+      if run
+        json({"run": Carcin::RunPresenter.new(run)})
       else
-        unprocessable "can't parse request"
+        not_found
       end
-    else
-      unprocessable "invalid content type"
     end
+  end
+
+  post "/run_requests" do
+    return unprocessable("invalid content type") unless request.headers["Content-Type"].starts_with? "application/json"
+
+    body = request.body
+    return unprocessable("no body") unless body
+
+    run_request = Carcin::RunRequest.from_json? body, "run_request"
+    return unprocessable("can't parse request") unless run_request
+
+    with_error_handling do
+      run_request.author_ip = client_ip
+      run = Carcin::Runner.execute run_request
+      if run.save
+        json({"run_request": {"run": Carcin::RunPresenter.new(run)}})
+      else
+        unprocessable run.error
+      end
+    end
+  end
+
+  private def client_ip
+    headers = request.headers
+    {"CLIENT_IP", "X_FORWARDED_FOR", "X_FORWARDED", "X_CLUSTER_CLIENT_IP", "FORWARDED"}.find_value {|header|
+      dashed_header = header.tr("_", "-")
+      headers[header]? || headers[dashed_header]? || headers["HTTP_#{header}"]? || headers["Http-#{dashed_header}"]?
+    }.try &.split(',').first
+  end
+
+  private def unprocessable message
+    error 422, message
+  end
+
+  private def not_found
+    error 404, "not found"
+  end
+
+  private def no_such_route
+    body not_found
+  end
+
+  private def with_error_handling
+    yield
   rescue e
     puts e.class
     puts e.message
     puts e.backtrace.join("\n")
-    json_error 500, "internal server error"
+    error 500, "internal server error"
+  end
+
+  private def error code, message
+    json({"error": {"message": message}}, code)
+  end
+
+  private def json object, code=200
+    headers({
+      "Content-Type":                "application/json; charset=utf-8",
+      "Access-Control-Allow-Origin": "*"
+    })
+    status code
+    object.to_json
   end
 end
 
-app.run(ENV["PORT"]?.try(&.to_i) || 8000)
+port = ENV["PORT"]?.try(&.to_i) || 8000
+server = HTTP::Server.new(port) do |request|
+  App.call(request)
+end
+
+puts "Carcin listening on #{port}"
+server.listen
