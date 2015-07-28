@@ -3,9 +3,7 @@
     "document",
     "window",
     "-Promise",
-    "Ember",
-    "$",
-    "DS"
+    "$"
   ],
   "browser": true,
   "boss": true,

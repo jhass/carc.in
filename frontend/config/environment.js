@@ -7,7 +7,7 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'hash',
     apiHost: null,
-    defaultLanguage: 'cr',
+    defaultLanguage: 'crystal',
     languageNames: {
       'cr': 'Crystal',
       'crystal': 'Crystal',

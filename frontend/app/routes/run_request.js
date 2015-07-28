@@ -12,9 +12,7 @@ export default Ember.Route.extend({
   setupController: function(controller, model) {
     controller.shortcuts.get('filters').clear();
     controller.set('model', model);
-    controller.set('languages', this.store.find('language'));
-    controller.set('languageId', this.get('languageId'));
-    controller.notifyPropertyChange('languageId');
+    controller.set('languages', this.store.findAll('language'));
   },
   model: function(params) {
     if (ENV.languageNames[params.language_id] === undefined) {
@@ -22,10 +20,6 @@ export default Ember.Route.extend({
       return;
     }
 
-    this.set('languageId', params.language_id);
-    return this.store.createRecord('run-request');
+    return this.store.createRecord('run-request', {language: params.language_id});
   },
-  didTransition: function() {
-    this.get('controller').updateUrl();
-  }
 });

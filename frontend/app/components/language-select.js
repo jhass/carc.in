@@ -1,3 +1,4 @@
+import Ember from "ember";
 import ENV from 'carcin/config/environment';
 
 Array.prototype.flatMap = function(cb) {
@@ -5,10 +6,11 @@ Array.prototype.flatMap = function(cb) {
 };
 
 export default Ember.Component.extend({
-  versions: function(key, value) {
-    if (arguments.length > 1) {
+  versions: Ember.computed('languages', {
+    set: function(key, value) {
       return value;
-    } else {
+    },
+    get: function() {
       var _this = this;
       this.get('languages').then(function(languages) {
         _this.set('versions', Array.prototype.concat.apply([], languages.filter(function(language) {
@@ -31,14 +33,14 @@ export default Ember.Component.extend({
 
       return [];
     }
-  }.property('languages'),
+  }),
   defaultVersion: function() {
     var _this = this,
         version = this.get('versions').filter(function(language) {
-          if (_this.get('language') !== undefined && _this.get('version') !== undefined) {
+          if (_this.get('version') !== undefined) {
             return language.name === _this.get('language') && language.version === _this.get('version');
           } else {
-            return language.id === _this.get('languageId') || language.name === _this.get('languageId');
+            return language.id === _this.get('language') || language.name === _this.get('language');
           }
         })[0];
 
@@ -47,7 +49,7 @@ export default Ember.Component.extend({
     }
 
     return version;
-  }.property('language', 'version', 'versions', 'languageId'),
+  }.property('language', 'version', 'versions'),
   actions: {
     activate: function() {
       var _this = this;

@@ -1,3 +1,4 @@
+import Ember from "ember";
 import ENV from 'carcin/config/environment';
 
 export default Ember.Handlebars.makeBoundHelper(function(language) {

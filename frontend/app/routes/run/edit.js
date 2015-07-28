@@ -1,3 +1,5 @@
+import Ember from "ember";
+
 export default Ember.Route.extend({
   controllerName: 'run_request',
   templateName: 'run_request',
@@ -23,7 +25,6 @@ export default Ember.Route.extend({
     this.set('run', model);
     controller.shortcuts.get('filters').clear();
     controller.set('model', request);
-    controller.set('languages', this.store.find('language'));
-    controller.set('languageId', model.get('language'));
+    controller.set('languages', this.store.findAll('language'));
   }
 });

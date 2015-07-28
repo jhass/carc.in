@@ -1,28 +1,14 @@
+import Ember from "ember";
 import ENV from 'carcin/config/environment';
 
-var LanguageMap = {
-  "crystal": "ruby",
-  "gcc": "clike"
-};
-
 export default Ember.Controller.extend({
-  needs: 'application',
+  application: Ember.inject.controller(),
   shortcuts: {
     'ctrl+enter': 'submit'
   },
   actions: {
-    updateRequest: function(language, version) {
-      this.set('languageId', this.getLanguageIdFor(language));
-      this.updateUrl();
-      this.set('model.language', language);
-      this.set('model.version', version);
-    },
     submit: function() {
       var _this = this, route = this.get("target");
-
-      if (this.get('isInvalid')) {
-        return;
-      }
 
       route.intermediateTransitionTo("loading");
       this.set('model.id', null);
@@ -33,34 +19,36 @@ export default Ember.Controller.extend({
       });
     }
   },
-  isInvalid: function() {
-    return Ember.isBlank(this.get('model.code'));
-  }.property('model.code'),
-  editorLanguage: function() {
-    return LanguageMap[this.get('model.language')] || this.get('model.language');
-  }.property('model.language'),
-  languageIdChanged: function() {
+  languageChanged: function() {
     Ember.run.once(this, 'updateTitle');
-  }.observes('languageId'),
+    Ember.run.once(this, 'updateUrl');
+  }.observes('model.language'),
   updateTitle: function() {
-    var title = 'Compile & run code in ' + ENV.languageNames[this.get('languageId')];
-    this.get('controllers.application').set('title', title);
+    var title = 'Compile & run code in ' + ENV.languageNames[this.get('model.language')];
+    this.get('application').set('title', title);
     document.title = title;
   },
   updateUrl: function() {
-    if (this.get('controllers.application.currentPath') === 'run_request') {
-      var location = this.get('target').location,
-          targetURL = '/' + this.get('languageId');
+    if (this.get('application.currentPath') === 'run_request') {
+      var location = this.get('target').location;
+      this.getLanguageIdFor(this.get('model.language'), function(id) {
+        var targetURL = '/' + id;
 
-      if (location.getURL() !== targetURL) {
-        location.replaceURL(targetURL);
-      }
+        if (location.getURL() !== targetURL) {
+          location.replaceURL(targetURL);
+        }
+      });
     }
   },
-  getLanguageIdFor: function(nameOrId) {
-    var language = this.get('languages').filter(function(language) {
-      return language.get('name') === nameOrId || language.get('id') === nameOrId;
-    })[0];
-    return language ? language.id : null;
+  getLanguageIdFor: function(nameOrId, cb) {
+    this.get('languages').then(function(languages) {
+      var language = languages.filter(function(language) {
+        return language.get('name') === nameOrId || language.get('id') === nameOrId;
+      })[0];
+
+      if (language) {
+        cb(language.id);
+      }
+    });
   }
 });

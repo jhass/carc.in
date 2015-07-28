@@ -1,0 +1,8 @@
+<div id="editor">
+  {{ivy-codemirror value=model.code autofocus='true' lineNumbers='true' theme='neat' mode=editorLanguage}}
+</div>
+
+<div id="controls">
+  {{language-select languages=languages language=model.language version=model.version action="updateRequest"}}
+  <button {{action 'submit'}} disabled={{isInvalid}}>Compile &amp; run code</button>
+</div>

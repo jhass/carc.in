@@ -3,7 +3,7 @@
     <p class="dropdown-description">Language</p>
     <p class="dropdown-button" {{action 'activate'}}>{{defaultVersion.prettyName}} {{defaultVersion.version}}</p>
     <ul class="dropdown-menu dropdown-select">
-      {{#each version in versions}}
+      {{#each versions as |version|}}
         <li data-value="{{version.name}}-{{version.version}}">{{version.prettyName}} {{version.version}}</li>
       {{/each}}
     </ul>
