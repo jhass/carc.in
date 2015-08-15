@@ -11,11 +11,15 @@ export default Ember.Component.extend({
     return LanguageMap[this.get('language')] || this.get('language');
   }.property('language'),
   watchForChanges: function() {
-    this.rerender();
+    this.highlight();
   }.observes('code'),
   didInsertElement: function() {
-    var code = this.$('pre > code')[0];
-    code.innerHTML = window.ansi_up.ansi_to_html(code.innerHTML, {use_classes: true});
+    this.highlight();
+  },
+  highlight: function() {
+    var pre = this.$('pre')[0], code = this.$('pre > code')[0];
+    code.innerHTML = window.ansi_up.ansi_to_html(this.get('code'), {use_classes: true});
+    pre.innerHTML = code.outerHTML;
     window.hljs.highlightBlock(this.$('pre > code')[0]);
     if (this.get('lineNumbers')) {
       window.hljs.lineNumbersBlock(this.$('pre > code')[0]);
