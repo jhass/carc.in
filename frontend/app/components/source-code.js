@@ -1,4 +1,5 @@
 import Ember from "ember";
+import _ from "lodash";
 
 var LanguageMap = {
   "crystal": "ruby",
@@ -18,7 +19,7 @@ export default Ember.Component.extend({
   },
   highlight: function() {
     var pre = this.$('pre')[0], code = this.$('pre > code')[0];
-    code.innerHTML = window.ansi_up.ansi_to_html(this.get('code'), {use_classes: true});
+    code.innerHTML = window.ansi_up.ansi_to_html(_.escape(this.get('code')), {use_classes: true});
     pre.innerHTML = code.outerHTML;
     window.hljs.highlightBlock(this.$('pre > code')[0]);
     if (this.get('lineNumbers')) {
