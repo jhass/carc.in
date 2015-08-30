@@ -18,8 +18,11 @@
     "neat": "~1.7.2",
     "highlightjs-line-numbers.js": "wcoder/highlightjs-line-numbers.js#master",
     "bitters": "~1.0.0",
-    "codemirror": "~4.8.0",
+    "codemirror": "~5.6.0",
     "ember-cli-codemirror-shim": "~0.0.1",
     "lodash": "^2.4.0"
+  },
+  "resolutions": {
+    "codemirror": "~5.6.0"
   }
 }
