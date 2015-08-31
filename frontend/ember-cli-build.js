@@ -6,6 +6,9 @@ module.exports = function(defaults) {
     codemirror: {
       modes: ['ruby', 'clike'],
       themes: ['neat']
+    },
+    SRI: {
+      enabled: false
     }
   });
 
