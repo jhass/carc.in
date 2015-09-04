@@ -4,6 +4,8 @@ module Carcin
   module Runner
     RUNNERS = {} of String => Runner
 
+    record Status, output, error, exit_code
+
     def self.execute request
       runner = RUNNERS[request.language]?
       if runner
@@ -18,7 +20,8 @@ module Carcin
     end
 
     def capture executable, params
-      Process.run executable, params, output: true, stderr: true
+      process = Process.new executable, params, output: nil, error: nil, input: false
+      Status.new process.output.read, process.error.read, process.wait.exit_code
     end
 
     abstract def execute request
@@ -98,7 +101,8 @@ module Carcin
       end
 
       def run request, version
-        Process.run executable_for(version), nil, output: true, stderr: true, input: request.code
+        process = Process.new executable_for(version), output: nil, error: nil, input: StringIO.new(request.code)
+        Status.new process.output.read, process.error.read, process.wait.exit_code
       end
 
       def wrapper_arguments request

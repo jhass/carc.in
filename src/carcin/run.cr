@@ -26,7 +26,7 @@ module Carcin
     end
 
     def self.from_request_and_status request, status
-      new status.output.not_nil!, status.stderr.not_nil!, status.exit
+      new status.output, status.error, status.exit_code
     end
 
     def self.find_by_id id
@@ -54,9 +54,9 @@ module Carcin
     def initialize request, status
       initialize(
         request,
-        status.output.not_nil!,
-        status.stderr.not_nil!,
-        status.exit
+        status.output,
+        status.error,
+        status.exit_code
       )
     end
 
