@@ -96,22 +96,34 @@ code {
         @include span-columns(12);
       }
 
-      h3, pre {
+      .codeheading, pre {
         @include span-columns(12);
+      }
+
+      .codeheading {
+        h3 {
+          margin-top: 3px;
+        }
+
       }
     }
 
     div.code {
-      h3 {
+      margin-bottom: flex-gutter();
+
+      .codeheading {
         @include span-columns(6);
       }
 
       #controls {
         @include span-columns(6);
+        @include omega;
+
         text-align: right;
-        margin: 1.3em 0 1.3em 0;
-        font-size: 0.9em;
-        height: 1.55em;
+
+        a {
+          margin-top: 3px;
+        }
       }
 
       pre {

@@ -7,13 +7,14 @@ var PlaypenMessages = {
 };
 
 export default DS.Model.extend({
-  language:   DS.attr('string'),
-  version:    DS.attr('string'),
-  code:       DS.attr('string'),
-  stdout:     DS.attr('string'),
-  stderr:     DS.attr('string'),
-  exit_code:  DS.attr('number'),
-  created_at: DS.attr('date'),
+  language:     DS.attr('string'),
+  version:      DS.attr('string'),
+  code:         DS.attr('string'),
+  stdout:       DS.attr('string'),
+  stderr:       DS.attr('string'),
+  exit_code:    DS.attr('number'),
+  created_at:   DS.attr('date'),
+  download_url: DS.attr('string'),
 
   prettyStderr: function() {
     var foo = this.get('stderr').split("\n").map(function(line) {

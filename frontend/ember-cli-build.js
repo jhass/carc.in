@@ -33,6 +33,7 @@ module.exports = function(defaults) {
 
   app.import('bower_components/ansi_up/ansi_up.js');
 
+  app.import('vendor/css/carcin-font.css');
 
   return app.toTree();
 };

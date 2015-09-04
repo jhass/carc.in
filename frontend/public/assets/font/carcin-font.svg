@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2015 by original authors @ fontello.com</metadata>
+<defs>
+<font id="carcin-font" horiz-adv-x="1000" >
+<font-face font-family="carcin-font" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="download" unicode="&#xe800;" d="m0 350q0 207 147 354t353 146 354-146 146-354-146-354-354-146-353 146-147 354z m109 0q0-162 115-276t276-115 276 115 115 276-115 276-276 115-276-115-115-276z m170-14l123 0 0 223 196 0 0-223 123 0-221-207z" horiz-adv-x="1000" />
+<glyph glyph-name="edit-3" unicode="&#xe801;" d="m0-150l0 818 188 182 521 0 0-226 31 31 162-160-380-381-239-78 76 238 262 262 0 226-369 0 0-156-164 0 0-668 533 0 0 143 88 87 0-318-709 0z m361 264l119 39-80 82z" horiz-adv-x="902" />
+<glyph glyph-name="doc-new" unicode="&#xe802;" d="m0-150l0 818 188 182 519 0 0-348-86 0 0 260-369 0 0-156-166 0 0-668 418 0 0-88-504 0z m373 207l0 162 209 0 0 207 160 0 0-207 207 0 0-162-207 0 0-207-160 0 0 207-209 0z" horiz-adv-x="949" />
+</font>
+</defs>
+</svg>

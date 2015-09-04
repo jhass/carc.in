@@ -1,8 +1,11 @@
 <div class="code">
-  <h3>Code</h3>
+  <div class="codeheading">
+    <h3>Code</h3>
+  </div>
   <div id="controls">
-    <button {{action 'new'}}>New</button>
-    <button {{action 'edit'}}>Edit</button>
+    <a {{action 'new'}}              class="button icon-doc-new" title="New" />
+    <a href="{{model.download_url}}" class="button icon-download" download title="Download" />
+    <a {{action 'edit'}}             class="button icon-edit-3" title="Edit" />
   </div>
 
   {{source-code code=model.code language=model.language lineNumbers=true}}
@@ -19,14 +22,20 @@
 <div class="output">
   {{#if model.prettyStderr}}
     <div class="stderr">
-      <h3>Error output</h3>
+      <div class="codeheading">
+        <h3>Error output</h3>
+      </div>
+
       {{source-code code=model.prettyStderr language='nohighlight'}}
     </div>
   {{/if}}
 
  {{#if displayOutput}}
     <div class="stdout">
-      <h3>Output</h3>
+      <div class="codeheading">
+        <h3>Output</h3>
+      </div>
+
       {{#if model.stdout}}
         {{source-code code=model.stdout language='nohighlight'}}
       {{else}}
