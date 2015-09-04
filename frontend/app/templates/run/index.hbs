@@ -3,9 +3,9 @@
     <h3>Code</h3>
   </div>
   <div id="controls">
-    <a {{action 'new'}}              class="button icon-doc-new" title="New" />
-    <a href="{{model.download_url}}" class="button icon-download" download title="Download" />
-    <a {{action 'edit'}}             class="button icon-edit-3" title="Edit" />
+    {{icon-button action="new" icon="doc-new" title="New"}}
+    {{icon-button download="" target="_blank" href=model.download_url icon="download" title="Download"}}
+    {{icon-button action="edit" icon="edit-3" title="Edit"}}
   </div>
 
   {{source-code code=model.code language=model.language lineNumbers=true}}

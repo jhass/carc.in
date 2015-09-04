@@ -20,7 +20,8 @@
     "bitters": "~1.1.0",
     "codemirror": "~5.6.0",
     "ember-cli-codemirror-shim": "~0.0.1",
-    "lodash": "^2.4.0"
+    "lodash": "^2.4.0",
+    "tooltipster": "~3.3.0"
   },
   "resolutions": {
     "codemirror": "~5.6.0"

@@ -9,6 +9,18 @@
 @import "ansi-theme";
 @import "hljs-line-numbers";
 
+.tooltips {
+  border-radius: 3px;
+  background: shade($action-color, 20%);
+  color: white;
+
+  .tooltipster-content {
+    font-size: 12px;
+    line-height: 1;
+    padding: 4px 4px;
+  }
+}
+
 code {
   padding: 0.5em;
   display: block;
