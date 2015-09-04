@@ -32,10 +32,33 @@ class App < Artanis::Application
     }.reject(&.versions.empty?)})
   end
 
+  get "/runs/:id.cr" do
+    begin
+      run = find_run params["id"]
+
+      if run
+        headers({
+          "Content-Type": "text/plain; charset=utf8",
+          "Content-Disposition": "attachment; filename=#{params["id"]}.cr"
+        })
+        status 200
+        run.code
+      else
+        headers({"Content-Type": "text/plain"})
+        status 404
+        "Not found."
+      end
+    rescue e
+      e.inspect_with_backtrace(STDERR)
+      status 500
+      headers({"Content-Type": "text/plain"})
+      "Something went wrong, sorry."
+    end
+  end
+
   get "/runs/:id" do
     with_error_handling do
-      id  = Carcin::Base36.decode params["id"]
-      run = Carcin::Run.find_by_id(id) if id
+      run = find_run params["id"]
 
       if run
         json({"run": Carcin::RunPresenter.new(run)})
@@ -43,6 +66,11 @@ class App < Artanis::Application
         not_found
       end
     end
+  end
+
+  private def find_run(id)
+    id = Carcin::Base36.decode id
+    Carcin::Run.find_by_id(id) if id
   end
 
   post "/run_requests" do
@@ -88,9 +116,7 @@ class App < Artanis::Application
   private def with_error_handling
     yield
   rescue e
-    puts e.class
-    puts e.message
-    puts e.backtrace.join("\n")
+    e.inspect_with_backtrace(STDERR)
     error 500, "internal server error"
   end
 
@@ -108,7 +134,7 @@ class App < Artanis::Application
   end
 end
 
-port = ENV["PORT"]?.try(&.to_i) || 8000
+port = ENV["PORT"]?.try(&.to_i?) || 8000
 server = HTTP::Server.new(port) do |request|
   App.call(request)
 end
