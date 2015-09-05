@@ -12,5 +12,5 @@ args = [
   "<%= binary %>"
 ]
 args += ARGV
-process = Process.new "/usr/bin/playpen", args
+process = Process.new "/usr/bin/playpen", args, input: true, output: true, error: true
 exit process.wait.exit_code
