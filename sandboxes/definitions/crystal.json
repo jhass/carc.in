@@ -10,9 +10,11 @@
     "libyaml",
     "llvm",
     "pcre",
-    "libevent"
+    "libevent",
+    "libpcl",
+    "gc"
   ],
-  "aur_dependencies": ["libpcl", "gc-static"],
+  "aur_dependencies": [],
   "timeout": 10,
   "memory":  256,
   "allowed_programs": [
