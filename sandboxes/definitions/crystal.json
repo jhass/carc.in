@@ -21,7 +21,7 @@
     "puts \"hi\"",
     "`ls -al`",
     "exit",
-    "r, w = IO.pipe;  Process.run(\"/bin/cat\", output: w, input: \"hi\"); p(r.read(1))",
+    "r, w = IO.pipe;  Process.run(\"/bin/cat\", output: w, input: StringIO.new(\"hi\")); p(r.read(1))",
     "lib LibC; fun mypopen = popen(command : UInt8*, type : UInt8*); end; LibC.mypopen(\"ls\", \"r\")",
     "require \"compiler/crystal/**\"; Crystal::Parser.parse(\"foo { |x| x.bar }\")",
     "sleep 0.01",
