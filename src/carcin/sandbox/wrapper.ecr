@@ -12,5 +12,5 @@ args = [
   "<%= binary %>"
 ]
 args += ARGV
-status = Process.run "/usr/bin/playpen", args
-exit status.exit.not_nil!
+process = Process.new "/usr/bin/playpen", args
+exit process.wait.exit_code
