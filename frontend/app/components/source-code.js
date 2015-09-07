@@ -2,7 +2,6 @@ import Ember from "ember";
 import _ from "lodash";
 
 var LanguageMap = {
-  "crystal": "ruby",
   "gcc": "c++"
 };
 
