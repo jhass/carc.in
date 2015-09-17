@@ -1,0 +1,14 @@
+version: 1.0
+shards:
+  artanis:
+    github: ysbaddaden/artanis
+    commit: 33898ea89306796e9ec93588aa4f03b3521da3e0
+
+  minitest:
+    github: ysbaddaden/minitest.cr
+    commit: 8f4f0684ce308edb3a777ce01ff50d520e7fa941
+
+  pg:
+    github: will/crystal-pg
+    commit: 8e60c969aa586ae47b08692238cd5fd165833747
+

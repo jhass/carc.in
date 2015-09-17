@@ -1,4 +1,0 @@
-deps do
-  github "ysbaddaden/artanis"
-  github "will/crystal-pg"
-end

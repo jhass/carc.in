@@ -1,4 +1,4 @@
-/.deps/
+.shards/
 /libs/
 /.crystal/
 /sandboxes/*
