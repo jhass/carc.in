@@ -33,13 +33,13 @@ module Carcin::Sandbox::PackageBuilder
   end
 
   def as_user uid
-    pid = Process.fork do
+    process = Process.fork do
       Process.uid = uid
       yield
       exit 0
     end
 
-    Process.waitpid pid
+    process.wait
   end
 
   def install_packages sandbox, name, version=nil, extra_names=nil

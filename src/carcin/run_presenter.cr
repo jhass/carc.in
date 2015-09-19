@@ -10,7 +10,7 @@ module Carcin
       stdout:       String,
       stderr:       String,
       exit_code:    Int32,
-      created_at:   {type: Time, converter: TimeFormat.new("%FT%TZ")},
+      created_at:   {type: Time, converter: Time::Format.new("%FT%TZ")},
       url:          String,
       html_url:     String,
       download_url: String

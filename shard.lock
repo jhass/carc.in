@@ -6,9 +6,9 @@ shards:
 
   minitest:
     github: ysbaddaden/minitest.cr
-    commit: 8f4f0684ce308edb3a777ce01ff50d520e7fa941
+    commit: 420bec39fd84428f384813b308ba4498b20b4f17
 
   pg:
     github: will/crystal-pg
-    commit: 8e60c969aa586ae47b08692238cd5fd165833747
+    version: 0.4.0
 
