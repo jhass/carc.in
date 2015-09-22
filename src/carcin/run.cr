@@ -85,6 +85,7 @@ module Carcin
       return false if @stderr.includes?("Bad system call")
       return false if @stderr.includes?("timeout triggered!")
       return false if @stdout.includes?("error code: 31")
+      return false if @stdout.includes?("execution of command failed with code:")
       return false if signal
 
       @exit_code == 0

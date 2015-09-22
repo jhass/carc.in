@@ -21,7 +21,15 @@ module Carcin
 
     def capture executable, params
       process = Process.new executable, params, output: nil, error: nil, input: false
-      Status.new process.output.read, process.error.read, process.wait.exit_code
+      status_from process
+    end
+
+    def status_from process
+      output = process.output.read
+      error = process.error.read
+      status = process.wait
+      exit_code = status.normal_exit? ? status.exit_code : status.exit_signal.value
+      Status.new output, error, exit_code
     end
 
     abstract def execute request
@@ -102,7 +110,7 @@ module Carcin
 
       def run request, version
         process = Process.new executable_for(version), output: nil, error: nil, input: StringIO.new(request.code)
-        Status.new process.output.read, process.error.read, process.wait.exit_code
+        status_from process
       end
 
       def wrapper_arguments request
