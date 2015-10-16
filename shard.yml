@@ -3,8 +3,8 @@ version: 0.1.0
 license: MIT
 dependencies:
   artanis:
-    github: ysbaddaden/artanis
-    branch: master
+    github: jhass/artanis
+    branch: crystal_090
   pg:
     github: will/crystal-pg
-    version: 0.4.0
+    branch: master

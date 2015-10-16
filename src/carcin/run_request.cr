@@ -2,9 +2,9 @@ require "json"
 
 module Carcin
   class RunRequest
-    json_mapping({
+    JSON.mapping({
       language: String,
-      version:  {type: String, nilable: true}
+      version:  {type: String, nilable: true},
       code:     String
     }, true)
 

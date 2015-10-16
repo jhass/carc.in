@@ -9,11 +9,11 @@ module Carcin::Sandbox::PackageBuilder
     uid = File.stat(Carcin::SANDBOX_BASEPATH).uid
     as_user(uid) do
       Dir.mkdir_p PKG_BASEPATH
-      Dir.chdir(PKG_BASEPATH) do
+      Dir.cd(PKG_BASEPATH) do
         File.rename "#{name}#{suffix}", name if File.exists? "#{name}#{suffix}"
         system "yaourt --noconfirm -G #{name}"
         File.rename name, "#{name}#{suffix}"
-        Dir.chdir("#{name}#{suffix}") do
+        Dir.cd("#{name}#{suffix}") do
           replace_version version if version
           packages = [name].concat extra_names
           unless system("makepkg -s --noconfirm --pkg #{packages.join(",")}")

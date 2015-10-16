@@ -1,6 +1,6 @@
 {
   "name": "crystal",
-  "versions": ["0.8.0", "0.7.7", "0.7.6", "0.7.5", "0.7.4", "0.7.3", "0.7.2", "0.7.1", "0.6.1"],
+  "versions": ["0.9.0", "0.8.0", "0.7.7", "0.7.6", "0.7.5", "0.7.4", "0.7.3", "0.7.2", "0.7.1", "0.6.1"],
   "dependencies": [
     "binutils",
     "gcc",
@@ -8,7 +8,7 @@
     "libunwind",
     "libxml2",
     "libyaml",
-    "llvm",
+    "llvm35",
     "pcre",
     "libevent",
     "libpcl",
@@ -21,7 +21,7 @@
     "puts \"hi\"",
     "`ls -al`",
     "exit",
-    "r, w = IO.pipe;  Process.run(\"/bin/cat\", output: w, input: StringIO.new(\"hi\")); p(r.read(1))",
+    "r, w = IO.pipe;  Process.run(\"/bin/cat\", output: w, input: MemoryIO.new(\"hi\")); p(r.read(1))",
     "lib LibC; fun mypopen = popen(command : UInt8*, type : UInt8*); end; LibC.mypopen(\"ls\", \"r\")",
     "require \"compiler/crystal/**\"; Crystal::Parser.parse(\"foo { |x| x.bar }\")",
     "sleep 0.01",

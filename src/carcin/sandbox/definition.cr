@@ -2,7 +2,7 @@ require "json"
 
 module Carcin::Sandbox
   class Definition
-    json_mapping({
+    JSON.mapping({
       name:                     String,
       versions:                 Array(String),
       split_packages:           {type: Array(String), nilable: true},

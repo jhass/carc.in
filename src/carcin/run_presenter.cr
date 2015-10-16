@@ -2,7 +2,7 @@ require "json"
 
 module Carcin
   class RunPresenter
-    json_mapping({
+    JSON.mapping({
       id:           String,
       language:     String,
       version:      String,

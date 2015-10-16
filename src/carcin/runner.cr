@@ -25,8 +25,8 @@ module Carcin
     end
 
     def status_from process
-      output = process.output.read
-      error = process.error.read
+      output = process.output.gets_to_end
+      error = process.error.gets_to_end
       status = process.wait
       exit_code = status.normal_exit? ? status.exit_code : status.exit_signal.value
       Status.new output, error, exit_code
@@ -50,7 +50,9 @@ module Carcin
       end
 
       def versions
-        @versions ||= Dir["#{sandbox_basepath}/*/"].map {|path| File.basename(path) }.sort.reverse
+        @versions ||= Dir.entries(sandbox_basepath)
+          .select {|path| File.directory? File.join(sandbox_basepath, path) }
+          .sort.reverse
       end
 
       def execute request
@@ -109,7 +111,7 @@ module Carcin
       end
 
       def run request, version
-        process = Process.new executable_for(version), output: nil, error: nil, input: StringIO.new(request.code)
+        process = Process.new executable_for(version), output: nil, error: nil, input: MemoryIO.new(request.code)
         status_from process
       end
 

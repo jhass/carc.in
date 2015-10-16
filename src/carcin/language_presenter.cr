@@ -1,7 +1,7 @@
 module Carcin
   class LanguagePresenter
-    json_mapping({
-      id: String
+    JSON.mapping({
+      id: String,
       name: String,
       versions: Array(String)
     }, true)
