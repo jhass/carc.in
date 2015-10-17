@@ -50,9 +50,9 @@ module Carcin
       end
 
       def versions
-        @versions ||= Dir.entries(sandbox_basepath)
-          .select {|path| File.directory? File.join(sandbox_basepath, path) }
-          .sort.reverse
+        @versions ||= Dir.entries(sandbox_basepath).select {|path|
+            !{".", ".."}.includes?(path) && File.directory?(File.join(sandbox_basepath, path))
+        }.sort.reverse
       end
 
       def execute request
