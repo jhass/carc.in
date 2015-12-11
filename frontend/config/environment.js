@@ -18,7 +18,7 @@ module.exports = function(environment) {
     },
     piwik: {
       sid: 11,
-      url: 'http://stats.mrzyx.de'
+      url: 'https://stats.mrzyx.de'
     },
     domainLanguageWhitelist: {
       "play.crystal-lang.org": ["crystal"]
