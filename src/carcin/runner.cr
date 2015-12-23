@@ -52,7 +52,7 @@ module Carcin
       def versions
         @versions ||= Dir.entries(sandbox_basepath).select {|path|
             !{".", ".."}.includes?(path) && File.directory?(File.join(sandbox_basepath, path))
-        }.sort.reverse
+        }.sort_by(&.split(".").map(&.to_i)).reverse
       end
 
       def execute request
