@@ -101,7 +101,7 @@ class App < Artanis::Application
     }.try &.split(',').first
   end
 
-  private def unprocessable message
+  private def unprocessable(message)
     error 422, message
   end
 
@@ -120,11 +120,11 @@ class App < Artanis::Application
     error 500, "internal server error"
   end
 
-  private def error code, message
+  private def error(code, message)
     json({"error": {"message": message}}, code)
   end
 
-  private def json object, code=200
+  private def json(object, code=200)
     headers({
       "Content-Type":                "application/json; charset=utf-8",
       "Access-Control-Allow-Origin": "*"

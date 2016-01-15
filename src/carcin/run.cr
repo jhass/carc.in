@@ -12,7 +12,7 @@ module Carcin
     getter  created_at
 
     class Failed < Run
-      def initialize request, @error
+      def initialize(request, @error)
         super request, "", "", 1
       end
 
@@ -21,15 +21,15 @@ module Carcin
       end
     end
 
-    def self.failed_for request, message
+    def self.failed_for(request, message)
       Failed.new request, message
     end
 
-    def self.from_request_and_status request, status
+    def self.from_request_and_status(request, status)
       new status.output, status.error, status.exit_code
     end
 
-    def self.find_by_id id
+    def self.find_by_id(id)
       result = Carcin.db.exec(
         "SELECT id, language, version, code, stdout, stderr, exit_code, author_ip, created_at AT TIME ZONE 'UTC' AS created_at
          FROM runs
@@ -51,7 +51,7 @@ module Carcin
       end
     end
 
-    def initialize request, status
+    def initialize(request, status)
       initialize(
         request,
         status.output,
@@ -60,7 +60,7 @@ module Carcin
       )
     end
 
-    def initialize request, stdout, stderr, exit_code
+    def initialize(request, stdout, stderr, exit_code)
       initialize(
         nil,
         request.language,

@@ -6,7 +6,7 @@ module Carcin
 
     record Status, output, error, exit_code
 
-    def self.execute request
+    def self.execute(request)
       runner = RUNNERS[request.language]?
       if runner
         runner.execute request
@@ -15,16 +15,16 @@ module Carcin
       end
     end
 
-    def self.register language, klass
+    def self.register(language, klass)
       RUNNERS[language] = klass
     end
 
-    def capture executable, params
+    def capture(executable, params)
       process = Process.new executable, params, output: nil, error: nil, input: false
       status_from process
     end
 
-    def status_from process
+    def status_from(process)
       output = process.output.gets_to_end
       error = process.error.gets_to_end
       status = process.wait
@@ -32,14 +32,14 @@ module Carcin
       Status.new output, error, exit_code
     end
 
-    abstract def execute request
+    abstract def execute(request)
     abstract def versions
     abstract def short_name
 
     module StandardRunner
       include Runner
 
-      abstract def wrapper_arguments request
+      abstract def wrapper_arguments(request)
 
       def name
         @name ||= self.class.name.downcase.split("::").last
@@ -55,7 +55,7 @@ module Carcin
         }.sort_by(&.split(".").map(&.to_i)).reverse
       end
 
-      def execute request
+      def execute(request)
         return Run.failed_for request, "no version available" if versions.empty?
 
         version = request.version || versions.first
@@ -68,11 +68,11 @@ module Carcin
         end
       end
 
-      protected def run request, version
+      protected def run(request, version)
         capture executable_for(version), wrapper_arguments(request)
       end
 
-      protected def executable_for version
+      protected def executable_for(version)
         File.join sandbox_basepath, "sandboxed_#{name}#{version}"
       end
     end
@@ -84,7 +84,7 @@ module Carcin
         "cr"
       end
 
-      def wrapper_arguments request
+      def wrapper_arguments(request)
         ["eval", request.code]
       end
     end
@@ -97,7 +97,7 @@ module Carcin
         "rb"
       end
 
-      def wrapper_arguments request
+      def wrapper_arguments(request)
         ["-e", request.code]
       end
     end
@@ -110,12 +110,12 @@ module Carcin
         "c"
       end
 
-      def run request, version
+      def run(request, version)
         process = Process.new executable_for(version), output: nil, error: nil, input: MemoryIO.new(request.code)
         status_from process
       end
 
-      def wrapper_arguments request
+      def wrapper_arguments(request)
       end
     end
     register "gcc", Gcc.new

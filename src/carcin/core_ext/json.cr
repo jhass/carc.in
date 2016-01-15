@@ -1,8 +1,8 @@
 require "json"
 
-def Object.from_json? json, root=nil
+def Object.from_json?(json, root=nil)
   if root
-    object = JSON.parse(json) as Hash(String, JSON::Type)
+    object = JSON.parse(json)
     object = object[root]?
     json = object.to_json if object
   end
