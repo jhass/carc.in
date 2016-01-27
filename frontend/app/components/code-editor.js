@@ -1,7 +1,6 @@
 import Ember from "ember";
 
 var LanguageMap = {
-  "crystal": "ruby",
   "gcc": "clike"
 };
 

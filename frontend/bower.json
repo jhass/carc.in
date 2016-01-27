@@ -18,7 +18,7 @@
     "neat": "~1.7.2",
     "highlightjs-line-numbers.js": "wcoder/highlightjs-line-numbers.js#master",
     "bitters": "~1.1.0",
-    "codemirror": "~5.6.0",
+    "codemirror": "~5.11.0",
     "ember-cli-codemirror-shim": "~0.0.1",
     "lodash": "^2.4.0",
     "tooltipster": "~3.3.0"
