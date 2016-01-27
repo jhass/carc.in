@@ -91,6 +91,8 @@ code {
         .dropdown-menu {
           top: auto;
           bottom: $dropdown-distance-from-menu;
+          overflow-y: auto;
+          max-height: 80vh;
 
           &:before {
             display: none;
