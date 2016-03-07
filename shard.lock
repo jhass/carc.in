@@ -1,8 +1,8 @@
 version: 1.0
 shards:
   artanis:
-    github: trapped/artanis
-    commit: a290b1da1c159fb86e65e1f1cb9cedbf3e94eec1
+    github: ysbaddaden/artanis
+    commit: 538f43440da9dd08c89f24a4de35ae22321c4f13
 
   minitest:
     github: ysbaddaden/minitest.cr
@@ -10,5 +10,5 @@ shards:
 
   pg:
     github: will/crystal-pg
-    version: 0.4.3
+    version: 0.5.0
 
