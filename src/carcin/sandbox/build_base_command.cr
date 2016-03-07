@@ -11,7 +11,7 @@ class Carcin::Sandbox::BuildBaseCommand
 
   BASE_PACKAGES = %w(bash coreutils shadow file grep sed pacman)
 
-  def execute definition, version=nil
+  def execute(definition, version=nil)
     Dir.mkdir_p File.dirname(base_path)
 
     case definition
@@ -42,7 +42,7 @@ class Carcin::Sandbox::BuildBaseCommand
     chrooted_system base_path, "locale-gen"
   end
 
-  def build definition
+  def build(definition)
     path = base_path_for(definition.name)
     if File.exists? path
       puts "base for #{definition.name} exists, skipping."
@@ -58,12 +58,12 @@ class Carcin::Sandbox::BuildBaseCommand
     end
   end
 
-  def pacstrap path, packages
+  def pacstrap(path, packages)
     system("pacstrap -cd #{path} #{packages.join(' ')}")
   end
 
 
-  def create_user chroot, name
+  def create_user(chroot, name)
     chrooted_system chroot, "useradd -m #{name}"
   end
 end

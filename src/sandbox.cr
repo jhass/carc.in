@@ -6,7 +6,7 @@ unless Process.uid == 0
   abort "This command must be run with root permissions."
 end
 
-def has_command command
+def has_command(command)
   system("which #{command} 2>/dev/null >/dev/null")
 end
 

@@ -6,7 +6,7 @@ class Carcin::Sandbox::UpdateBaseCommand
   include Command
   include BaseCommand
 
-  def execute definition, version=nil
+  def execute(definition, version=nil)
     case definition
     when "base"
       update base_path
@@ -17,7 +17,7 @@ class Carcin::Sandbox::UpdateBaseCommand
     end
   end
 
-  def update path
+  def update(path)
     if File.exists? path
       chrooted_system path, "pacman -Syu --noconfirm"
     else

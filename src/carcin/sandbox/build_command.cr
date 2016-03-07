@@ -10,7 +10,7 @@ class Carcin::Sandbox::BuildCommand
   include BtrfsSubvolumeCommands
   include PackageBuilder
 
-  def execute definition, version
+  def execute(definition, version)
     path = path_to(definition, version)
 
     if File.exists? path

@@ -8,7 +8,7 @@ class Carcin::Sandbox::DropCommand
   def initialize(@confirm=true)
   end
 
-  def execute definition, version
+  def execute(definition, version)
     path = path_to(definition, version)
 
     if File.exists? path

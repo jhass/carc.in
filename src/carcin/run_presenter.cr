@@ -5,12 +5,12 @@ module Carcin
     JSON.mapping({
       id:           String,
       language:     String,
-      version:      String,
+      version:      {type: String, nilable: true},
       code:         String,
       stdout:       String,
       stderr:       String,
       exit_code:    Int32,
-      created_at:   {type: Time, converter: Time::Format.new("%FT%TZ")},
+      created_at:   {type: Time, converter: Time::Format.new("%FT%TZ"), nilable: true},
       url:          String,
       html_url:     String,
       download_url: String

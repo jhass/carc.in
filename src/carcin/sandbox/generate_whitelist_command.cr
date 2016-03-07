@@ -12,7 +12,7 @@ class Carcin::Sandbox::GenerateWhitelistCommand
   def initialize(@force=false)
   end
 
-  def execute definition, version
+  def execute(definition, version)
     ensure_path_to definition
 
     whitelist       = whitelist_path definition, version
@@ -39,7 +39,7 @@ class Carcin::Sandbox::GenerateWhitelistCommand
     end
   end
 
-  def test_programs definition, version
+  def test_programs(definition, version)
     definition.allowed_programs.each do |program|
       run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program, "sandbox.builder")
       puts "Exited with #{run.exit_code} for: #{program}"

@@ -2,7 +2,7 @@ require "./definition"
 
 module Carcin::Sandbox
   module Command
-    def run language, version
+    def run(language, version)
       if language == "all"
         languages.each do |language|
           run language, version
@@ -38,11 +38,11 @@ module Carcin::Sandbox
       abort "This is not a base command."
     end
 
-    def versions_for language
+    def versions_for(language)
       definition_for(language).try(&.versions) || [] of String
     end
 
-    def definition_for language
+    def definition_for(language)
       definition = definitions.find(&.name.==(language))
       raise "No definition found for #{language}" unless definition
       definition
@@ -62,11 +62,11 @@ module Carcin::Sandbox
       }
     end
 
-    def ensure_path_to definition
+    def ensure_path_to(definition)
       Dir.mkdir_p path_to(definition)
     end
 
-    def path_to definition, version=nil
+    def path_to(definition, version=nil)
       path = File.join Carcin::SANDBOX_BASEPATH, definition.name
       version ? File.join(path, version) : path
     end
@@ -75,19 +75,19 @@ module Carcin::Sandbox
       File.join Carcin::SANDBOX_BASEPATH, "bases", "base"
     end
 
-    def base_path_for language
+    def base_path_for(language)
       File.join Carcin::SANDBOX_BASEPATH, "bases", language
     end
 
-    def wrapper_path definition, version
+    def wrapper_path(definition, version)
       File.join path_to(definition), "sandboxed_#{definition.name}#{version}"
     end
 
-    def whitelist_path definition, version
+    def whitelist_path(definition, version)
       File.join path_to(definition), "sandbox_whitelist#{version}"
     end
 
-    def chrooted_system chroot, command
+    def chrooted_system(chroot, command)
       system %(arch-chroot "#{chroot}" #{command})
     end
   end

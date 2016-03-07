@@ -7,7 +7,7 @@ class Carcin::Sandbox::DropBaseCommand
   include BaseCommand
   include BtrfsSubvolumeCommands
 
-  def execute definition, version=nil
+  def execute(definition, version=nil)
     case definition
     when "base"
       drop base_path
@@ -16,7 +16,7 @@ class Carcin::Sandbox::DropBaseCommand
     end
   end
 
-  def drop path
+  def drop(path)
     if File.exists? path
       delete_subvolume path
     else

@@ -3,7 +3,7 @@ require "../core_ext/process"
 module Carcin::Sandbox::PackageBuilder
   PKG_BASEPATH = File.join Carcin::SANDBOX_BASEPATH, "pkgs"
 
-  def build_package name, version=nil, extra_names=nil
+  def build_package(name, version=nil, extra_names=nil)
     suffix = version ?  "-#{version}" : ""
     extra_names ||= [] of String
     uid = File.stat(Carcin::SANDBOX_BASEPATH).uid
@@ -16,7 +16,7 @@ module Carcin::Sandbox::PackageBuilder
         Dir.cd("#{name}#{suffix}") do
           replace_version version if version
           packages = [name].concat extra_names
-          unless system("makepkg -s --noconfirm --pkg #{packages.join(",")}")
+          unless system("makepkg -s --noconfirm --nocheck")
             abort "Failed to build #{name}#{suffix}"
           end
         end
@@ -24,7 +24,7 @@ module Carcin::Sandbox::PackageBuilder
     end
   end
 
-  def replace_version version
+  def replace_version(version)
     File.write "PKGBUILD", File.read_lines("PKGBUILD").map {|line|
       line.gsub(/^pkgver=.+$/, "pkgver=#{version}")
           .gsub(/^_last_release=.+$/, "_last_release=#{version}")
@@ -32,7 +32,7 @@ module Carcin::Sandbox::PackageBuilder
     system "updpkgsums"
   end
 
-  def as_user uid
+  def as_user(uid)
     process = Process.fork do
       Process.uid = uid
       yield
@@ -42,13 +42,13 @@ module Carcin::Sandbox::PackageBuilder
     process.wait
   end
 
-  def install_packages sandbox, name, version=nil, extra_names=nil
+  def install_packages(sandbox, name, version=nil, extra_names=nil)
     packages.each do |package|
       install_package sandbox, package, version
     end
   end
 
-  def install_package sandbox, name, version=nil, extra_names=nil
+  def install_package(sandbox, name, version=nil, extra_names=nil)
     suffix = version ?  "-#{version}" : ""
     extra_names ||= [] of String
     package_names = [name].concat extra_names

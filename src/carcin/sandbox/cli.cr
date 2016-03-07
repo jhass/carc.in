@@ -17,7 +17,7 @@ class Carcin::Sandbox::Cli
     }
   }
 
-  def initialize arguments
+  def initialize(arguments)
     help if (arguments & %w(help -h --help)).any? || arguments.empty?
 
     @command  = arguments[0]
@@ -25,12 +25,12 @@ class Carcin::Sandbox::Cli
     @version  = arguments[2]? || ARGUMENT_DEFAULTS[:version].fetch(@command) { help "No version given" }
   end
 
-  def run commands
+  def run(commands)
     command = commands.fetch(@command) { help "Command not found" }
     command.run(@language, @version)
   end
 
-  def help reason=nil
+  def help(reason=nil)
     puts "#{reason}\n\n" if reason
     puts "Build and manage sandboxes"
     puts
