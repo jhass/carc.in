@@ -1,6 +1,6 @@
 {
   "name": "crystal",
-  "versions": ["0.13.0", "0.12.0", "0.11.1", "0.11.0", "0.10.2", "0.10.1", "0.10.0", "0.9.1", "0.9.0", "0.8.0", "0.7.7", "0.7.6", "0.7.5", "0.7.4", "0.7.3", "0.7.2", "0.7.1", "0.6.1"],
+  "versions": ["0.15.0", "0.14.2", "0.14.1", "0.14.0", "0.13.0", "0.12.0", "0.11.1", "0.11.0", "0.10.2", "0.10.1", "0.10.0", "0.9.1", "0.9.0", "0.8.0", "0.7.7", "0.7.6", "0.7.5", "0.7.4", "0.7.3", "0.7.2", "0.7.1", "0.6.1"],
   "dependencies": [
     "binutils",
     "gcc",
@@ -17,19 +17,17 @@
   "aur_dependencies": [],
   "timeout": 10,
   "memory":  256,
+  "max_tasks": 512,
   "allowed_programs": [
     "puts \"hi\"",
     "`ls -al`",
     "exit",
     "r, w = IO.pipe;  Process.run(\"/bin/cat\", output: w, input: MemoryIO.new(\"hi\")); p(r.read(Slice(UInt8).new(1)))",
     "lib LibC; fun mypopen = popen(command : UInt8*, type : UInt8*); end; LibC.mypopen(\"ls\", \"r\")",
-    "require \"compiler/crystal/**\"; Crystal::Parser.parse(\"foo { |x| x.bar }\")",
     "sleep 0.01",
     "File.open(\"/dev/random\") {|io| io.read(Slice(UInt8).new(1)) }",
     "require \"secure_random\"; SecureRandom.hex(64)",
-    "require \"benchmark\"; Benchmark.bm do |b|; b.report(\"Here\") { puts \"Yes\" }; end"
-  ],
-  "allowed_failing_programs": [
+    "require \"benchmark\"; Benchmark.bm do |b|; b.report(\"Here\") { puts \"Yes\" }; end",
     "putss \"hi\"",
     "p 5/0"
   ]

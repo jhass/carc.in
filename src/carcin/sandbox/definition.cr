@@ -11,8 +11,8 @@ module Carcin::Sandbox
       aur_dependencies:         Array(String),
       timeout:                  Int32,
       memory:                   {type: Int32, nilable: true},
-      allowed_programs:         Array(String),
-      allowed_failing_programs: Array(String)
+      max_tasks:                Int32,
+      allowed_programs:         Array(String)
       }, true)
   end
 end

@@ -136,7 +136,7 @@ end
 
 port = ENV["PORT"]?.try(&.to_i?) || 8000
 server = HTTP::Server.new(port) do |context|
-  App.call(context.request)
+  App.call(context)
 end
 
 puts "Carcin listening on #{port}"

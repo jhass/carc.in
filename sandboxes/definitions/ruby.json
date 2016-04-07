@@ -1,6 +1,6 @@
 {
   "name": "ruby",
-  "versions": ["2.2.2"],
+  "versions": ["2.3.0", "2.2.4"],
   "dependencies": [
     "libxml2",
     "libyaml",
@@ -13,13 +13,12 @@
   "aur_dependencies": [],
   "timeout": 5,
   "memory":  256,
+  "max_tasks": 512,
   "allowed_programs": [
     "sleep 0.01",
     "puts \"hi\"",
     "`ls -al`",
-    "exit"
-  ],
-  "allowed_failing_programs": [
+    "exit",
     "putss \"hi\"",
     "p 5/0"
   ]

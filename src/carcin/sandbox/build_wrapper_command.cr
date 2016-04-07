@@ -9,10 +9,12 @@ class Carcin::Sandbox::BuildWrapperCommand
     getter name
     getter timeout
     getter memory
+    getter max_tasks
+    getter learn_mode
     getter whitelist
     ECR.def_to_s "#{__DIR__}/wrapper.ecr"
 
-    def initialize(@path, @name, @binary, @timeout, @memory, @whitelist)
+    def initialize(@path, @name, @binary, @timeout, @memory, @max_tasks, @learn_mode, @whitelist)
     end
 
     def binary
@@ -22,7 +24,7 @@ class Carcin::Sandbox::BuildWrapperCommand
 
   include Command
 
-  def execute(definition, version)
+  def execute(definition, version, learn_mode=false)
     ensure_path_to definition
 
     wrapper = wrapper_path definition, version
@@ -34,6 +36,8 @@ class Carcin::Sandbox::BuildWrapperCommand
         definition.binary,
         definition.timeout,
         definition.memory,
+        definition.max_tasks,
+        learn_mode,
         whitelist_path(definition, version)
       ).to_s(io)
     end

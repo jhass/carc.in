@@ -1,6 +1,6 @@
 {
   "name": "gcc",
-  "versions": ["4.9.2"],
+  "versions": ["5.3.0", "4.9.2"],
   "split_packages": ["gcc-libs"],
   "binary": "c",
   "dependencies": [
@@ -10,11 +10,10 @@
   "aur_dependencies": ["c"],
   "timeout": 5,
   "memory":  256,
+  "max_tasks": 512,
   "allowed_programs": [
     "int main(void) { return 0; }",
     "int main(void) { exit(0); }",
     "#include <stdio.h>\nint main(void) { printf(\"hi\"); return 0; }"
-  ],
-  "allowed_failing_programs": [
   ]
 }

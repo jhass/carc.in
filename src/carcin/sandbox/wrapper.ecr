@@ -6,8 +6,12 @@ args = [
   <% if memory %>
     "-m", "<%= memory %>",
   <% end %>
- "-t", "<%= timeout %>",
- "-S", "<%= whitelist %>",
+  "-t", "<%= timeout %>",
+  "-T", "<%= max_tasks %>",
+  "-S", "<%= whitelist %>",
+  <% if learn_mode %>
+    "-l",
+  <% end %>
   "--",
   "<%= binary %>"
 ]
