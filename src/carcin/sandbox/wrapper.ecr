@@ -3,18 +3,25 @@ args = [
   "-p",
   "-d", "/dev/null:rw,/dev/random:r,/dev/urandom:r",
   "-u", "<%= name %>",
-  <% if memory %>
-    "-m", "<%= memory %>",
-  <% end %>
-  "-t", "<%= timeout %>",
   "-T", "<%= max_tasks %>",
   "-S", "<%= whitelist %>",
   <% if learn_mode %>
     "-l",
+  <% else %>
+    "-t", "<%= timeout %>",
+    <% if memory %>
+      "-m", "<%= memory %>",
+    <% end %>
   <% end %>
   "--",
   "<%= binary %>"
 ]
 args += ARGV
+<% if learn_mode %>
+  quoted_args = args.map(&.gsub('"', %(\\")))
+                    .map {|arg| arg.includes?(' ') ? %("#{arg}") : arg }
+                    .join(' ')
+  puts "Running /usr/bin/playpen #{quoted_args}"
+<% end %>
 process = Process.new "/usr/bin/playpen", args, input: true, output: true, error: true
 exit process.wait.exit_code

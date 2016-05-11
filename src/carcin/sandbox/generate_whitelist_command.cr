@@ -28,12 +28,20 @@ class Carcin::Sandbox::GenerateWhitelistCommand
 
     abort "Sandbox not build for #{definition.name} #{version}" unless File.exists? path_to(definition, version)
 
+    # Create & Truncate
+    File.write(whitelist, "")
+
     puts "Generating learning mode wrapper"
     BuildWrapperCommand.new.execute(definition, version, true)
 
     definition.allowed_programs.each do |program|
       puts "Learn #{program}"
       run = Carcin::Runner.execute Carcin::RunRequest.new(definition.name, version, program, "sandbox.builder")
+      unless run.successful?
+        puts run.error?
+        puts run.stderr
+        puts run.stdout
+      end
     end
 
     puts "Restoring normal wrapper"
