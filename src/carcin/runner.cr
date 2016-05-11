@@ -3,8 +3,9 @@ require "./core_ext/process"
 module Carcin
   module Runner
     RUNNERS = {} of String => Runner
+    @versions : Array(String)?
 
-    record Status, output, error, exit_code
+    record Status, output : String, error : String, exit_code : Int32
 
     def self.execute(request)
       runner = RUNNERS[request.language]?
@@ -42,7 +43,7 @@ module Carcin
       abstract def wrapper_arguments(request)
 
       def name
-        @name ||= self.class.name.downcase.split("::").last
+        self.class.name.downcase.split("::").last
       end
 
       def sandbox_basepath

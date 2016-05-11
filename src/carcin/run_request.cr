@@ -8,7 +8,7 @@ module Carcin
       code:     String
     }, true)
 
-    property author_ip
+    property author_ip : String?
 
     def initialize(@language, @version, @code, @author_ip)
     end

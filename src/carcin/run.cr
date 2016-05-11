@@ -1,15 +1,15 @@
 module Carcin
   class Run
     getter! error
-    getter  id
-    getter  language
-    getter  version
-    getter  code
-    getter  stdout
-    getter  stderr
-    getter  exit_code
-    getter  author_ip
-    getter  created_at
+    getter  id : Int32?
+    getter  language : String
+    getter  version : String?
+    getter  code : String
+    getter  stdout : String
+    getter  stderr : String
+    getter  exit_code : Int32
+    getter  author_ip : String
+    getter  created_at : Time?
 
     class Failed < Run
       def initialize(request, @error)
