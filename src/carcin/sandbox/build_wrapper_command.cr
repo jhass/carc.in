@@ -5,16 +5,16 @@ require "./command"
 
 class Carcin::Sandbox::BuildWrapperCommand
   class Wrapper
-    getter path
-    getter name
-    getter timeout
-    getter memory
-    getter max_tasks
-    getter learn_mode
-    getter whitelist
+    getter path : String
+    getter name : String
+    getter timeout : Int32
+    getter memory : Int32?
+    getter max_tasks : Int32
+    getter learn_mode : Bool
+    getter whitelist : String
     ECR.def_to_s "#{__DIR__}/wrapper.ecr"
 
-    def initialize(@path, @name, @binary, @timeout, @memory, @max_tasks, @learn_mode, @whitelist)
+    def initialize(@path, @name, @binary : String?, @timeout, @memory, @max_tasks, @learn_mode, @whitelist)
     end
 
     def binary

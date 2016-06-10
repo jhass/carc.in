@@ -17,6 +17,10 @@ class Carcin::Sandbox::Cli
     }
   }
 
+  @command : String
+  @language : String
+  @version : String?
+
   def initialize(arguments)
     help if (arguments & %w(help -h --help)).any? || arguments.empty?
 

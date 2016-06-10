@@ -52,6 +52,7 @@ module Carcin::Sandbox
       definitions.map &.name
     end
 
+    @definitions : Array(Definition)?
     def definitions
       @definitions ||= Dir["#{Carcin::SANDBOX_BASEPATH}/definitions/*.json"].map {|path|
         begin
