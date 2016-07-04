@@ -9,7 +9,7 @@ class Carcin::Sandbox::BuildBaseCommand
   include BtrfsSubvolumeCommands
   include PackageBuilder
 
-  BASE_PACKAGES = %w(bash coreutils shadow file grep sed pacman)
+  BASE_PACKAGES = %w(bash coreutils shadow file grep sed pacman lz4)
 
   def execute(definition, version=nil)
     Dir.mkdir_p File.dirname(base_path)
