@@ -30,24 +30,21 @@ module Carcin
     end
 
     def self.find_by_id(id)
-      result = Carcin.db.exec(
+      Carcin.db.query_one?(
         "SELECT id, language, version, code, stdout, stderr, exit_code, author_ip, created_at AT TIME ZONE 'UTC' AS created_at
          FROM runs
          WHERE id = $1",
         [id]
-      )
-
-      unless result.rows.empty?
-        row = result.to_hash.first
-        new row["id"] as Int32,
-            row["language"] as String,
-            row["version"] as String,
-            row["code"] as String,
-            row["stdout"] as String,
-            row["stderr"] as String,
-            row["exit_code"] as Int32,
-            row["author_ip"] as String,
-            row["created_at"] as Time
+      ) do |result|
+        new result.read(Int32),
+            result.read(String),
+            result.read(String),
+            result.read(String),
+            result.read(String),
+            result.read(String),
+            result.read(Int32),
+            result.read(String),
+            result.read(Time)
       end
     end
 
@@ -96,13 +93,14 @@ module Carcin
         @error = "no version available"
         false
       else
-        result = Carcin.db.exec(
+        Carcin.db.query_one(
           "INSERT INTO runs (language, version, code, stdout, stderr, exit_code, author_ip)
            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, created_at AT TIME ZONE 'UTC' AS created_at",
           [@language, @version, @code, @stdout, @stderr, @exit_code, @author_ip]
-        ).rows.first
-        @id         = result[0] as Int32
-        @created_at = result[1] as Time
+        ) do |result|
+          @id         = result.read(Int32)
+          @created_at = result.read(Time)
+        end
         true
       end
     end

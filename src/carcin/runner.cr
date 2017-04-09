@@ -112,7 +112,7 @@ module Carcin
       end
 
       def run(request, version)
-        process = Process.new executable_for(version), output: nil, error: nil, input: MemoryIO.new(request.code)
+        process = Process.new executable_for(version), output: nil, error: nil, input: IO::Memory.new(request.code)
         status_from process
       end
 
