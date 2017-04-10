@@ -1,5 +1,6 @@
 .shards/
-/libs/
+/lib
+/bin
 /.crystal/
 /sandboxes/*
 !/sandboxes/definitions/

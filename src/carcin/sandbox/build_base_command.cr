@@ -1,13 +1,13 @@
 require "./command"
 require "./btrfs_subvolume_commands"
-require "./package_builder"
+require "./package_manager"
 require "./definition"
 
 class Carcin::Sandbox::BuildBaseCommand
   include Command
   include BaseCommand
   include BtrfsSubvolumeCommands
-  include PackageBuilder
+  include PackageManager
 
   BASE_PACKAGES = %w(bash coreutils shadow file grep sed pacman lz4)
 
@@ -53,7 +53,7 @@ class Carcin::Sandbox::BuildBaseCommand
     create_user path, definition.name
     pacstrap path, definition.dependencies
     definition.aur_dependencies.each do |name|
-      build_package name
+      ensure_package_exists path, name
       install_package path, name
     end
   end

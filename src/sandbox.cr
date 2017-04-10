@@ -10,7 +10,7 @@ def has_command(command)
   system("which #{command} 2>/dev/null >/dev/null")
 end
 
-{"btrfs", "pacstrap", "arch-chroot", "makepkg", "updpkgsums", "yaourt", "playpen"}.each do |tool|
+{"btrfs", "pacstrap", "arch-chroot", "playpen"}.each do |tool|
   unless has_command(tool)
     abort "This command needs the #{tool} tool."
   end

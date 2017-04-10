@@ -1,8 +1,8 @@
 version: 1.0
 shards:
   artanis:
-    github: jhass/artanis
-    commit: 75414f94c4f4e398f27ce1584a9a1b0a270b034a
+    github: ysbaddaden/artanis
+    commit: a1f286e767193727c27de23571e873e70415fe62
 
   db:
     github: crystal-lang/crystal-db
