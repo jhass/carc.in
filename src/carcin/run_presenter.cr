@@ -27,7 +27,15 @@ module Carcin
       @created_at   = run.created_at
       @url          = "%s/runs/%s" % {Carcin::BASE_URL, @id}
       @html_url     = "%s/#/r/%s" % {Carcin::FRONTEND_URL, @id}
-      @download_url = "%s/runs/%s.cr" % {Carcin::BASE_URL, @id}
+      file_extension = case @language
+                       when "crystal"
+                         ".cr"
+                       when "ruby"
+                         ".rb"
+                       when "gcc"
+                         ".c"
+                       end
+      @download_url = "%s/runs/%s#{file_extension}" % {Carcin::BASE_URL, @id}
     end
   end
 end
