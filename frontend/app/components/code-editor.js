@@ -1,41 +1,45 @@
-import Ember from "ember";
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
+import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'ember-keyboard-shortcuts';
 
-var LanguageMap = {
+const LanguageMap = {
   "gcc": "clike"
 };
 
-export default Ember.Component.extend({
+export default Component.extend({
+  keyboardShortcuts: {
+    'ctrl+enter': 'submit',
+    'command+enter': 'submit'
+  },
   actions: {
-    updateRequest: function(language, version) {
+    updatedCode(code) {
+      this.set('model.code', code);
+    },
+    updateRequest(language, version) {
       this.set('model.language', language);
       this.set('model.version', version);
+      this.onLanguageChange();
     },
-    submit: function() {
-      if (this.get('isInvalid')) {
+    submit() {
+      if (this.isInvalid) {
         return;
       }
 
-      this.sendAction();
+      this.onSubmit();
     }
   },
-  didInsertElement: function() {
-    var cm = this.codeMirror();
-    cm.focus();
-    cm.setCursor(cm.lineCount());
+  didInsertElement() {
+    bindKeyboardShortcuts(this);
   },
-  codeMirror: function() {
-    var candidate, candidates = this.get('childViews');
-    for (var i=0; i < candidates.length; i++) {
-      candidate = candidates[i].get('codeMirror');
-      if (candidate) {
-        return candidate;
-      }
-    }
+  willDestroyElement() {
+    unbindKeyboardShortcuts(this);
   },
-  editorLanguage: function() {
+  editorLanguage: computed('model.language', function() {
     return LanguageMap[this.get('model.language')] || this.get('model.language');
-  }.property('model.language'),
-  isInvalid: function() {
-    return Ember.isBlank(this.get('model.code'));
-  }.property('model.code')
+  }),
+  isInvalid: computed('model.code', function() {
+    return isBlank(this.get('model.code'));
+  })
 });

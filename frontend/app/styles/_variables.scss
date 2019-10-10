@@ -1,15 +1,7 @@
-@import "bower_components/bitters/app/assets/stylesheets/variables";
-
-$form-box-shadow-focus: $form-box-shadow;
-
+$light-gray: #ddd;
+$base-border: 1px solid $light-gray;
+$spinner-color: #E1E1E1;
 $code-fg: #000000;
 $code-bg: #F8F8F8;
-$spinner-color: #E1E1E1;
-$small-display: new-breakpoint(max-width 900px 12);
-$dropdown-distance-from-menu: 50px;
-$extended-text-inputs-list: '#{$text-inputs-list}',
-                            '.CodeMirror';
-$all-text-inputs: assign-inputs($extended-text-inputs-list);
-$extended-buttons-list: '#{$buttons-list}',
-                        '.button';
-$all-buttons: assign-inputs($extended-buttons-list);
+$dropdown-distance-from-menu: 10px;
+$small-display: 'max-width: 900px';

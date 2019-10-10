@@ -1,28 +1,37 @@
-import Ember from "ember";
-import _ from "lodash";
+import Component from "@ember/component";
+import { computed } from '@ember/object';
+import hljs from 'highlight';
 
-var LanguageMap = {
+let LanguageMap = {
   "gcc": "c++"
 };
 
-export default Ember.Component.extend({
+export default Component.extend({
+  highlightCode: computed('language', function() {
+    return this.language != 'nohighlight'
+  }),
   lineNumbers: false,
-  highlightLanguage: function() {
-    return LanguageMap[this.get('language')] || this.get('language');
-  }.property('language'),
-  watchForChanges: function() {
-    this.highlight();
-  }.observes('code'),
-  didInsertElement: function() {
-    this.highlight();
-  },
-  highlight: function() {
-    var pre = this.$('pre')[0], code = this.$('pre > code')[0];
-    code.innerHTML = window.ansi_up.ansi_to_html(_.escape(this.get('code')), {use_classes: true});
-    pre.innerHTML = code.outerHTML;
-    window.hljs.highlightBlock(this.$('pre > code')[0]);
-    if (this.get('lineNumbers')) {
-      window.hljs.lineNumbersBlock(this.$('pre > code')[0]);
+  ansiCodes: false,
+  classNames: 'source',
+  highlightLanguage: computed('language', function() {
+    return LanguageMap[this.language] || this.language;
+  }),
+  didRender() {
+    if (this.ansiCodes) {
+      let ansiUp = new window.AnsiUp;
+      let pre = this.$('pre')[0], code = this.$('pre > code')[0];
+      code.innerHTML = ansiUp.ansi_to_html(this.code, {use_classes: true});
+      pre.innerHTML = code.outerHTML;
+    }
+
+    if (this.highlightCode) {
+      let code = this.$('pre > code')[0];
+      code.innerHTML = this.code;
+      hljs.highlightBlock(code);
+    }
+
+    if (this.lineNumbers) {
+      hljs.lineNumbersBlock(this.$('pre > code')[0], {singleLine: true});
     }
   }
 });

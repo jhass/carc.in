@@ -1,8 +1,8 @@
-import Ember from "ember";
+import Route from "@ember/routing/route";
 import ENV from 'carcin/config/environment';
 
-export default Ember.Route.extend({
-  redirect: function() {
-    this.replaceWith('run_request', ENV.defaultLanguage);
+export default Route.extend({
+  redirect() {
+    this.replaceWith('run_request', {language_id: ENV.defaultLanguage});
   }
 });

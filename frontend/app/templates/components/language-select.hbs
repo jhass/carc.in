@@ -1,9 +1,9 @@
 <div class="dropdown">
   <div class="dropdown-container">
     <p class="dropdown-description">Language</p>
-    <p class="dropdown-button" {{action 'activate'}}>{{defaultVersion.prettyName}} {{defaultVersion.version}}</p>
+    <button class="dropdown-button" {{action "activate"}}>{{defaultVersion.prettyName}} {{defaultVersion.version}}</button>
     <ul class="dropdown-menu dropdown-select">
-      {{#each versions as |version|}}
+      {{#each this.versions as |version|}}
         <li data-value="{{version.name}}-{{version.version}}">{{version.prettyName}} {{version.version}}</li>
       {{/each}}
     </ul>

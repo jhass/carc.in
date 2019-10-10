@@ -1,4 +1,4 @@
-import DS from "ember-data";
+import DS from 'ember-data';
 import ENV from 'carcin/config/environment';
 
 export default DS.Model.extend({

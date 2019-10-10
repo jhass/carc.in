@@ -1,11 +1,8 @@
-@import "bower_components/bourbon/app/assets/stylesheets/bourbon";
-@import "grid-settings";
+@import "bourbon";
+@import "bitters/base";
 @import "variables";
-@import "bower_components/neat/app/assets/stylesheets/neat";
-@import "bower_components/bitters/app/assets/stylesheets/forms";
-@import "bower_components/bitters/app/assets/stylesheets/buttons";
-@import "spinner";
 @import "dropdown";
+@import "spinner";
 @import "ansi-theme";
 @import "hljs-line-numbers";
 
@@ -21,6 +18,7 @@
   }
 }
 
+
 code {
   padding: 0.5em;
   display: block;
@@ -29,7 +27,8 @@ code {
 }
 
 #main {
-  @include outer-container;
+  display: grid;
+  grid-template-columns: repeat(12, 8.3fr);
 
   &.loading {
     .spinner {
@@ -39,25 +38,28 @@ code {
       left: 0;
       top: 45vh;
     }
+
+    > h2 {
+      display: none;
+    }
+  }
+
+  > h2 {
+    grid-column: 2 / span 10;
+    @include margin(1.5em null);
   }
 
   &.run_request, &.run\.edit {
-    h2, #editor {
-      @include shift(1);
-    }
-
-    h2 {
-      @include span-columns(10);
-    }
-
-    #editor {
-      @include span-columns(10);
+    > div {
+      grid-column: 2 / span 10;
+      grid-row-start: 2;
       margin-bottom: 1em;
 
       .CodeMirror {
         height: 70vh;
         font-family: monospace;
         font-size: 1.1em;
+        border-color: $light-gray;
 
         .CodeMirror-gutter {
           background-color: white;
@@ -70,22 +72,28 @@ code {
     }
 
     #controls {
-      @include span-columns(10);
-      @include shift(1);
-      text-align: right;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-end;
 
-      > div, button {
-        display: inline-block;
+      > div { // select
       }
 
-      button {
-        float: right;
-        margin-left: flex-gutter();
+      > button { // submit
+        margin-left: 2%;
       }
 
       .dropdown {
         .dropdown-description, .dropdown-button {
-          font-size: 1em;
+          font-size: 1rem;
+        }
+
+        .dropdown-container {
+          display: block;
+        }
+
+        button {
+          color: $font-color--base;
         }
 
         .dropdown-menu {
@@ -102,37 +110,30 @@ code {
     }
   }
 
-  &.run\.index {
+  &.run\.show {
+    grid-column-gap: 2%;
+
     div.code, div.output {
-      @include span-columns(6);
-
-      @include media($small-display) {
-        @include span-columns(12);
-      }
-
-      .codeheading, pre {
-        @include span-columns(12);
-      }
-
-      .codeheading {
-        h3 {
-          margin-top: 3px;
-        }
-
-      }
+      grid-column-end: span 5;
+      grid-row-start: 2;
     }
 
     div.code {
-      margin-bottom: flex-gutter();
+      grid-column-start: 2;
+      display: grid;
 
-      .codeheading {
-        @include span-columns(6);
+      > div.codeheading {
+        grid-column: 1 / span 1;
+        grid-row: 1 / span 1;
+
+        h3 {
+          margin-top: 3px;
+        }
       }
 
-      #controls {
-        @include span-columns(6);
-        @include omega;
-
+      > div#controls {
+        grid-column: 2 / span 1;
+        grid-row: 1 / span 1;
         text-align: right;
 
         a {
@@ -140,46 +141,77 @@ code {
         }
       }
 
-      pre {
-        margin-bottom: 0;
-        background-color: $code-bg;
+      > div.source {
+        grid-column: 1 / span 2;
+        grid-row: 2 / span 1;
 
-        code:nth-child(2) {
-          border-left: 1px solid darken($code-bg, 15%);
+        pre {
+          margin: 0;
+          height: 100%;
+          background-color: $code-bg;
+          code {
+            padding-bottom: 0;
+          }
         }
       }
 
-      @include direction-context(right-to-left) {
-        .metadata {
-          @include span-columns(12);
-          @include fill-parent;
-          @include row;
-          background-color: darken($code-bg, 8%);
-          font-size: 0.6em;
-          padding: 0.5em;
+      > div.metadata {
+        grid-row: 3;
+        grid-column-end: span 2;
+        display: flex;
+        background-color: darken($code-bg, 8%);
+        font-size: 0.6em;
+        padding: 0.5em;
 
-          .created_at {
-            @include span-columns(7);
-          }
+        .created_at {
+          flex-grow: 1;
+        }
 
-          .right_metadata {
-            @include span-columns(5);
-            text-align: right;
+        .right_metadata {
 
-            .exit_code {
-              &:before {
-                content: "Exited with: ";
-              }
-
-              &:after {
-                content: " | "
-              }
+          .exit_code {
+            &:before {
+              content: "Exited with: ";
             }
 
-            .language {
+            &:after {
+              content: " | "
             }
           }
         }
+      }
+    }
+
+    @media ($small-display) {
+      div.code, div.output {
+        grid-column: 2 / span 10;
+      }
+
+      div.code {
+        > div.codeheading {
+          grid-column: 1 / span 2;
+        }
+
+        > div#controls {
+          grid-row: 2 / span 1;
+          grid-column: 1 / span 2;
+          text-align: left;
+        }
+
+        > div.source {
+          grid-row: 3 / span 1;
+          margin-top: 1em;
+        }
+
+        > div.metadata {
+          grid-row: 4 / span 1;
+        }
+      }
+
+      div.output {
+        grid-row-start: 3;
+
+        margin-top: 1em;
       }
     }
   }

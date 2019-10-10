@@ -1,26 +1,28 @@
-import Ember from "ember";
+import Route from "@ember/routing/route";
+import { inject as service } from '@ember/service';
+import EmberObject from '@ember/object';
 import ENV from 'carcin/config/environment';
 
-export default Ember.Route.extend({
-  shortcuts: {
-    'ctrl+enter': 'submit'
-  },
-  actions: {
-    submit: function() {
-      this.controller.send('submit');
-    }
-  },
-  setupController: function(controller, model) {
-    controller.shortcuts.get('filters').clear();
-    controller.set('model', model);
-    controller.set('languages', this.store.findAll('language'));
-  },
-  model: function(params) {
+export const PageModel = EmberObject.extend({
+  request: null,
+  languages: null
+});
+
+export default Route.extend({
+  store: service(),
+  model(params) {
     if (ENV.languageNames[params.language_id] === undefined) {
-      this.transitionTo('run_request', ENV.defaultLanguage);
+      this.replaceWith('run_request', ENV.defaultLanguage);
       return;
     }
 
-    return this.store.createRecord('run-request', {language: params.language_id});
-  },
+    const request = this.get('store').createRecord('run-request', {language: params.language_id})
+
+    return this.get('store').findAll('language').then(function (languages) {
+      return PageModel.create({
+        request: request,
+        languages: languages
+      });
+    });
+  }
 });

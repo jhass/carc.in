@@ -4,7 +4,7 @@
   $base-line-height: 1.5em !default;
   $base-background-color: white !default;
   $dark-gray: #333 !default;
-  $large-screen: em(860) !default;
+  $large-screen: 'max-width: 860px';
   $base-font-color: $dark-gray !default;
   $dropdown-color: $base-font-color;
   $dropdown-description-color: lighten($dropdown-color, 40%);
@@ -39,7 +39,7 @@
     margin: 0;
     padding: 0 ($dropdown-padding / 2) 0 $dropdown-padding;
 
-    @include media($large-screen) {
+    @media($large-screen) {
       font-size: 1em;
     }
   }
@@ -60,27 +60,39 @@
     padding: 0 ($dropdown-padding * 2.5) 0 ($dropdown-padding / 2);
     position: relative;
 
-    @include media($large-screen) {
+    @media($large-screen) {
       font-size: 1em;
       padding: 0 ($dropdown-padding * 2.5) 0 ($dropdown-padding / 2);
     }
-  }
 
-  .dropdown-button:hover {
-    background-color: $dropdown-background-hover;
-  }
+    &:hover, &:focus, &:active {
+      background-color: $dropdown-background-hover;
+      outline: 0;
+      // border-bottom-right-radius: $base-border-radius;
+      // border-top-right-radius: $base-border-radius;
+      // border-top: $dropdown-border;
+      // border-right: $dropdown-border;
+      // border-bottom: $dropdown-border;
+    }
 
-  .dropdown-button:after {
-    color: $base-font-color;
-    content: "\25BE";
-    display: block;
-    position: absolute;
-    right: $dropdown-padding;
-    top: $dropdown-arrow-top-distance;
+    &::-moz-focus-inner {
+      border: 0;
+    }
+
+    &:after {
+      color: $base-font-color;
+      content: "\25BE";
+      display: block;
+      position: absolute;
+      right: $dropdown-padding;
+      top: $dropdown-arrow-top-distance;
+
+      &:focus, &:active {}
+    }
   }
 
   .dropdown-menu {
-    @include transition (all 0.2s ease-in-out);
+    transition: (all 0.2s ease-in-out);
     background: $dropdown-background;
     border-radius: $base-border-radius;
     border: $dropdown-border;

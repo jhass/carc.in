@@ -1,7 +1,7 @@
-import Ember from "ember";
+import { helper } from '@ember/component/helper';
 import ENV from 'carcin/config/environment';
 
-export default Ember.Handlebars.makeBoundHelper(function(language) {
+export default helper(function([language, ...rest]) {
   if (typeof(language) === "string") {
     return ENV.languageNames[language];
   } else {

@@ -1,14 +1,12 @@
-/* global require, module */
-var EmberApp = require('ember-cli/lib/broccoli/ember-app');
+'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function(defaults) {
-  var app = new EmberApp(defaults, {
+  let app = new EmberApp(defaults, {
     codemirror: {
       modes: ['crystal', 'ruby', 'clike'],
       themes: ['neat']
-    },
-    SRI: {
-      enabled: false
     }
   });
 
@@ -25,15 +23,9 @@ module.exports = function(defaults) {
   // please specify an object with the list of modules as keys
   // along with the exports of each module as its value.
 
-  app.import('bower_components/ember-shortcuts/ember-shortcuts.js');
-
-  app.import('bower_components/highlightjs/highlight.pack.js');
-  app.import('bower_components/highlightjs/styles/github.css');
-  app.import('bower_components/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js');
-
-  app.import('bower_components/ansi_up/ansi_up.js');
-
   app.import('vendor/css/carcin-font.css');
+  app.import('node_modules/ansi_up/ansi_up.js');
+  app.import('node_modules/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js');
 
   return app.toTree();
 };

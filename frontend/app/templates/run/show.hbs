@@ -3,12 +3,18 @@
     <h3>Code</h3>
   </div>
   <div id="controls">
-    {{icon-button action="new" icon="doc-new" title="New"}}
-    {{icon-button download="" target="_blank" href=model.download_url icon="download" title="Download"}}
-    {{icon-button action="edit" icon="edit-3" title="Edit"}}
+    <LinkTo @route="run_request" @model={{model.language}} class="button icon-doc-new">
+      <EmberTooltip @text="New (N)" />
+    </LinkTo>
+    <a href={{model.download_url}} download target="_blank" rel="noopener" class="button icon-download">
+      <EmberTooltip @text="Download" />
+    </a>
+    <LinkTo @route="run.edit" @model={{model.id}} class="button icon-edit-3">
+      <EmberTooltip @text="Edit (E)" />
+    </LinkTo>
   </div>
 
-  {{source-code code=model.code language=model.language lineNumbers=true}}
+  <SourceCode @code={{model.code}} @language={{model.language}} @lineNumbers={{true}} />
 
   <div class="metadata">
     <span class="created_at">{{model.created_at}}</span>
@@ -26,18 +32,18 @@
         <h3>Error output</h3>
       </div>
 
-      {{source-code code=model.prettyStderr language='nohighlight'}}
+      <SourceCode @code={{model.prettyStderr}} @language="nohighlight" @ansiCodes={{true}} />
     </div>
   {{/if}}
 
- {{#if displayOutput}}
+  {{#if displayOutput}}
     <div class="stdout">
       <div class="codeheading">
         <h3>Output</h3>
       </div>
 
       {{#if model.stdout}}
-        {{source-code code=model.stdout language='nohighlight'}}
+        <SourceCode @code={{model.stdout}} @language="nohighlight" @ansiCodes={{true}} />
       {{else}}
         There was no output.
       {{/if}}
