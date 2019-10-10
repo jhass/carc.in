@@ -3,12 +3,6 @@ require "./command"
 class Carcin::Sandbox::GenerateWhitelistCommand
   include Command
 
-  {% if flag?(:x86_64) %}
-    ALL_SYSCALLS_LIST = "all_syscalls64"
-  {% else %}
-    ALL_SYSCALLS_LIST = "all_syscalls32"
-  {% end %}
-
   def initialize(@force=false)
   end
 

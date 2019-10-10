@@ -23,5 +23,5 @@ args += ARGV
                     .join(' ')
   puts "Running /usr/bin/playpen #{quoted_args}"
 <% end %>
-process = Process.new "/usr/bin/playpen", args, input: true, output: true, error: true
+process = Process.new "/usr/bin/playpen", args, input: :inherit, output: :inherit, error: :inherit
 exit process.wait.exit_code

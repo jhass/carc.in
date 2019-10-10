@@ -34,7 +34,7 @@ module Carcin
         "SELECT id, language, version, code, stdout, stderr, exit_code, author_ip, created_at AT TIME ZONE 'UTC' AS created_at
          FROM runs
          WHERE id = $1",
-        [id]
+        id
       ) do |result|
         new result.read(Int32),
             result.read(String),
@@ -96,7 +96,7 @@ module Carcin
         Carcin.db.query_one(
           "INSERT INTO runs (language, version, code, stdout, stderr, exit_code, author_ip)
            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, created_at AT TIME ZONE 'UTC' AS created_at",
-          [@language, @version, @code, @stdout, @stderr, @exit_code, @author_ip]
+          @language, @version, @code, @stdout, @stderr, @exit_code, @author_ip
         ) do |result|
           @id         = result.read(Int32)
           @created_at = result.read(Time)

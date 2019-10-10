@@ -21,7 +21,7 @@ module Carcin
     end
 
     def capture(executable, params)
-      process = Process.new executable, params, output: nil, error: nil, input: false
+      process = Process.new executable, params, output: :pipe, error: :pipe, input: :close
       status_from process
     end
 
@@ -112,7 +112,7 @@ module Carcin
       end
 
       def run(request, version)
-        process = Process.new executable_for(version), output: nil, error: nil, input: IO::Memory.new(request.code)
+        process = Process.new executable_for(version), output: :pipe, error: :pipe, input: IO::Memory.new(request.code)
         status_from process
       end
 

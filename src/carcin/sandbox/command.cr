@@ -89,7 +89,7 @@ module Carcin::Sandbox
     end
 
     def chrooted_system(chroot, command)
-      system %(arch-chroot "#{chroot}" #{command})
+      system %(systemd-nspawn -D "#{chroot}" #{command})
     end
   end
 

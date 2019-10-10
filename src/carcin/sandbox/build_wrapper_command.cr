@@ -1,5 +1,4 @@
 require "ecr/macros"
-require "tempfile"
 
 require "./command"
 
@@ -29,7 +28,7 @@ class Carcin::Sandbox::BuildWrapperCommand
 
     wrapper = wrapper_path definition, version
 
-    file = Tempfile.open("sandbox_wrapper") do |io|
+    file = File.tempfile("sandbox_wrapper") do |io|
       Wrapper.new(
         path_to(definition, version),
         definition.name,

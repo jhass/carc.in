@@ -135,9 +135,9 @@ class App < Artanis::Application
 end
 
 port = ENV["PORT"]?.try(&.to_i?) || 8000
-server = HTTP::Server.new(port) do |context|
+server = HTTP::Server.new do |context|
   App.call(context)
 end
 
 puts "Carcin listening on #{port}"
-server.listen
+server.listen(port)
