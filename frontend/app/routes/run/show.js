@@ -21,7 +21,6 @@ export default Route.extend({
       this.transitionTo('run.edit', this.controller.model.id);
     },
     newInNewTab: function() {
-      debugger;
       window.open(this.router.urlFor('run_request', this.controller.model.language));
     },
     editInNewTab: function() {
