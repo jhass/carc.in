@@ -1,6 +1,7 @@
 import Route from "@ember/routing/route";
 import { inject as service } from '@ember/service';
 import EmberObject from '@ember/object';
+import { hash } from 'rsvp';
 import ENV from 'carcin/config/environment';
 
 export const PageModel = EmberObject.extend({
@@ -16,13 +17,11 @@ export default Route.extend({
       return;
     }
 
-    const request = this.get('store').createRecord('run-request', {language: params.language_id})
+    const request = this.get('store').createRecord('run-request', {language: params.language_id}),
+      languages = this.get('store').findAll('language');
 
-    return this.get('store').findAll('language').then(function (languages) {
-      return PageModel.create({
-        request: request,
-        languages: languages
-      });
+    return hash({languages: languages, request: request}).then(function (data) {
+      return PageModel.create(data);
     });
   }
 });

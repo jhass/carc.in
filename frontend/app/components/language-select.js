@@ -23,6 +23,9 @@ export default Component.extend({
     }
   },
   didReceiveAttrs() {
+    if (this.languages == undefined) {
+      return;
+    }
     this.updateVersions()
     this.updateDefaultVersion()
 
