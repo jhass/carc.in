@@ -28,7 +28,7 @@ code {
 
 #main {
   display: grid;
-  grid-template-columns: repeat(12, 8.3fr);
+  grid-template-columns: repeat(12, 1fr);
 
   &.loading {
     .spinner {
@@ -53,6 +53,7 @@ code {
     > div {
       grid-column: 2 / span 10;
       grid-row-start: 2;
+      min-width: 0;
       margin-bottom: 1em;
 
       .CodeMirror {
@@ -116,6 +117,7 @@ code {
     div.code, div.output {
       grid-column-end: span 5;
       grid-row-start: 2;
+      min-width: 0;
     }
 
     div.code {
@@ -145,6 +147,7 @@ code {
       > div.source {
         grid-column: 1 / span 2;
         grid-row: 2 / span 1;
+        min-width: 0;
 
         pre {
           margin: 0;
