@@ -113,6 +113,7 @@ code {
 
   &.run\.show {
     grid-column-gap: 2%;
+    align-items: start;
 
     div.code, div.output {
       grid-column-end: span 5;
