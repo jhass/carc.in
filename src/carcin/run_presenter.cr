@@ -28,12 +28,9 @@ module Carcin
       @url          = "%s/runs/%s" % {Carcin::BASE_URL, @id}
       @html_url     = "%s/#/r/%s" % {Carcin::FRONTEND_URL, @id}
       file_extension = case @language
-                       when "crystal"
-                         ".cr"
-                       when "ruby"
-                         ".rb"
-                       when "gcc"
-                         ".c"
+                       when "crystal" then ".cr"
+                       when "ruby"    then ".rb"
+                       when "gcc"     then ".c"
                        end
       @download_url = "%s/runs/%s%s" % {Carcin::BASE_URL, @id, file_extension}
     end
