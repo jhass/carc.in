@@ -35,7 +35,7 @@ module Carcin
                        when "gcc"
                          ".c"
                        end
-      @download_url = "%s/runs/%s#{file_extension}" % {Carcin::BASE_URL, @id}
+      @download_url = "%s/runs/%s%s" % {Carcin::BASE_URL, @id, file_extension}
     end
   end
 end
