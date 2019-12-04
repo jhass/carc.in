@@ -1,5 +1,3 @@
-require "../core_ext/named_tuple"
-
 class Carcin::Sandbox::Cli
   ARGUMENT_DEFAULTS = {
     language: {
