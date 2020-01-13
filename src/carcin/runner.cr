@@ -102,7 +102,7 @@ module Carcin
       end
 
       def wrapper_arguments(request)
-        ["-e", request.code]
+        ["-E", "UTF-8", "-e", request.code]
       end
     end
     register "ruby", Ruby.new
