@@ -26,8 +26,11 @@ module Carcin
     end
 
     def status_from(process)
-      output = process.output.gets_to_end
-      error = process.error.gets_to_end
+      # We want to store the output as UTF-8 text, so we need to make sure to have any
+      # output with escape sequences for non UTF-8 characters.
+      # Scrub doesn't handle the null byte, so we do that aditionally
+      output = process.output.gets_to_end.scrub.gsub('\0', Char::REPLACEMENT)
+      error = process.error.gets_to_end.scrub.gsub('\0', Char::REPLACEMENT)
       status = process.wait
       exit_code = status.normal_exit? ? status.exit_code : status.exit_signal.value
       Status.new output, error, exit_code
