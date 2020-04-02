@@ -26,7 +26,6 @@ export default Component.extend({
 
     if (this.highlightCode) {
       let code = this.$('pre > code')[0];
-      code.innerHTML = this.code;
       hljs.highlightBlock(code);
     }
 
