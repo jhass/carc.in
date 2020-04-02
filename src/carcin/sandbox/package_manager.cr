@@ -44,7 +44,7 @@ module Carcin::Sandbox::PackageManager
   private def package_paths(sandbox, name, version=nil, extra_names=nil)
     extra_names ||= [] of String
     package_names = [name].concat extra_names
-    pattern = File.join(PKG_BASEPATH, "#{name}", "{#{package_names.join(",")}}-#{version}*.pkg.tar.xz")
+    pattern = File.join(PKG_BASEPATH, "#{name}", "{#{package_names.join(",")}}-#{version}*.pkg.tar.*")
     packages = Dir[pattern].map {|path|
       name = File.basename(path)
       {name, path, File.join(sandbox, name)}
