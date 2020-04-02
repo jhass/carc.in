@@ -1,6 +1,9 @@
 import Route from "@ember/routing/route";
 import Promise from 'rsvp';
-import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'ember-keyboard-shortcuts';
+import {
+  bindKeyboardShortcuts,
+  unbindKeyboardShortcuts
+} from 'ember-keyboard-shortcuts';
 import PageModel from 'carcin/routes/run_request';
 import ENV from 'carcin/config/environment';
 

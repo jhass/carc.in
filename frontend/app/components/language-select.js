@@ -6,7 +6,7 @@ import jQuery from 'jquery';
 export default Component.extend({
   actions: {
     activate() {
-      let action = this.get('action'),
+      let action = this.action,
         button = this.$(".dropdown-button"),
         menu = this.$(".dropdown-menu");
       menu.toggleClass("show-menu");

@@ -8,10 +8,10 @@ export default Controller.extend({
   router: service(),
   actions: {
     submit() {
-      let target = this.get('target');
+      let target = this.target;
       target.intermediateTransitionTo('loading');
       this.set('model.request.id', null);
-      const model = this.get('model');
+      const model = this.model;
       const request = this.get('model.request');
       request.save().then((response) => {
         this.transitionToRoute('run.show', response.get('run'));
@@ -32,12 +32,12 @@ export default Controller.extend({
   },
   updateUrl: function() {
     if (this.get('router.currentRouteName') === 'run_request') {
-      let location = this.get('target').location,
+      let location = this.target.location,
         id = this.getLanguageIdFor(this.get('model.request.language')),
         targetURL = '/' + id;
 
       if (location.getURL() !== targetURL) {
-        this.get('target').replaceWith('run_request', id);
+        this.target.replaceWith('run_request', id);
       }
     }
   },

@@ -17,8 +17,8 @@ export default Route.extend({
       return;
     }
 
-    const request = this.get('store').createRecord('run-request', {language: params.language_id}),
-      languages = this.get('store').findAll('language');
+    const request = this.store.createRecord('run-request', {language: params.language_id}),
+      languages = this.store.findAll('language');
 
     return hash({languages: languages, request: request}).then(function (data) {
       return PageModel.create(data);

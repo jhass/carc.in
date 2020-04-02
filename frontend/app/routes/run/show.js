@@ -1,5 +1,8 @@
 import Route from "@ember/routing/route";
-import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'ember-keyboard-shortcuts';
+import {
+  bindKeyboardShortcuts,
+  unbindKeyboardShortcuts
+} from 'ember-keyboard-shortcuts';
 import { inject as service } from '@ember/service';
 import ENV from 'carcin/config/environment';
 

@@ -1,14 +1,14 @@
-import DS from 'ember-data';
+import Model, { attr, belongsTo } from '@ember-data/model';
 import ENV from 'carcin/config/environment';
 
-export default DS.Model.extend({
+export default Model.extend({
   url: '/run_requests',
-  language: DS.attr('string'),
-  version:  DS.attr('string'),
-  code:     DS.attr('string'),
-  run:      DS.belongsTo('run'),
+  language: attr('string'),
+  version:  attr('string'),
+  code:     attr('string'),
+  run:      belongsTo('run'),
 
   languageName: function() {
-    return ENV.languageNames[this.get('language')];
+    return ENV.languageNames[this.language];
   }
 });

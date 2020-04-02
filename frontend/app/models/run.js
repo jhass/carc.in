@@ -1,4 +1,4 @@
-import DS from "ember-data";
+import Model, { attr } from '@ember-data/model';
 import { computed } from '@ember/object';
 import ENV from 'carcin/config/environment';
 
@@ -7,15 +7,15 @@ const PlaypenMessages = {
   'write: Resource temporarily unavailable': 'Execution timed out or too much output.'
 };
 
-export default DS.Model.extend({
-  language:     DS.attr('string'),
-  version:      DS.attr('string'),
-  code:         DS.attr('string'),
-  stdout:       DS.attr('string'),
-  stderr:       DS.attr('string'),
-  exit_code:    DS.attr('number'),
-  created_at:   DS.attr('date'),
-  download_url: DS.attr('string'),
+export default Model.extend({
+  language:     attr('string'),
+  version:      attr('string'),
+  code:         attr('string'),
+  stdout:       attr('string'),
+  stderr:       attr('string'),
+  exit_code:    attr('number'),
+  created_at:   attr('date'),
+  download_url: attr('string'),
 
   prettyStderr: computed('stderr', function() {
     return this.stderr.split("\n").map(function(line) {
