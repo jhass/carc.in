@@ -7,12 +7,14 @@ class Carcin::Sandbox::DropBaseCommand
   include BaseCommand
   include BtrfsSubvolumeCommands
 
-  def execute(definition, version=nil)
+  def execute(definition, version = nil)
     case definition
     when "base"
       drop base_path
     when Definition
       drop base_path_for(definition.name)
+    else
+      # exhaustive
     end
   end
 

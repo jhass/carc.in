@@ -11,7 +11,7 @@ class Carcin::Sandbox::BuildBaseCommand
 
   BASE_PACKAGES = %w(bash coreutils shadow file grep sed pacman lz4)
 
-  def execute(definition, version=nil)
+  def execute(definition, version = nil)
     Dir.mkdir_p File.dirname(base_path)
 
     case definition
@@ -20,6 +20,8 @@ class Carcin::Sandbox::BuildBaseCommand
     when Definition
       build_base
       build definition
+    else
+      # exhaustive
     end
   end
 
@@ -61,7 +63,6 @@ class Carcin::Sandbox::BuildBaseCommand
   def pacstrap(path, packages)
     system("pacstrap -cd #{path} #{packages.join(' ')}")
   end
-
 
   def create_user(chroot, name)
     chrooted_system chroot, "useradd -m #{name}"

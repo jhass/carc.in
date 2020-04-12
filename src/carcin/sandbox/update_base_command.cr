@@ -6,7 +6,7 @@ class Carcin::Sandbox::UpdateBaseCommand
   include Command
   include BaseCommand
 
-  def execute(definition, version=nil)
+  def execute(definition, version = nil)
     case definition
     when "base"
       update base_path
@@ -14,6 +14,8 @@ class Carcin::Sandbox::UpdateBaseCommand
       update base_path
       DropBaseCommand.new.execute definition
       BuildBaseCommand.new.execute definition
+    else
+      # exhaustive
     end
   end
 
