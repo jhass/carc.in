@@ -25,7 +25,7 @@
     "@glimmer/component": "^1.0.0",
     "@glimmer/tracking": "^1.0.0",
     "active-model-adapter": "^2.2.0",
-    "ansi_up": "^4.0.4",
+    "ansi_up": "^5.0.0",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "^1.5.3",
